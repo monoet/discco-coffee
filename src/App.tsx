@@ -1,92 +1,95 @@
 import { useState, useEffect, useCallback } from 'react'
 import { categories, featuredItem, type Category, type MenuItem } from './data/menu'
 
-// ─── Design Tokens ───────────────────────────────────────────────────────────
+// ─── Design Tokens ─────────────────────────────────────────────────────────────
 const css = `
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=Fraunces:wght@600;700;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&family=Manrope:wght@400;500;600&display=swap');
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
   /* ── Palette ── */
-  --cream:      #F6F0E6;
-  --ivory:      #FBF8F2;
-  --beige:      #E8D9C8;
-  --tan:        #D6BEA4;
-  --brown:      #6D4C3D;
-  --espresso:   #2A1F1A;
-  --charcoal:   #241C18;
-  --muted:      #6E625A;
-  --border:     rgba(36, 28, 24, 0.10);
-  --border-md:  rgba(36, 28, 24, 0.16);
+  --bg:           #F5F1E8;
+  --surface:      #FBF8F2;
+  --text:         #181410;
+  --text-2:       #6E655D;
+  --divider:      rgba(24, 20, 16, 0.12);
+  --divider-md:   rgba(24, 20, 16, 0.18);
+  --thumb-bg:     #E8E1D4;
 
   /* ── Accent ── */
-  --olive:      #8A9B4F;
-  --olive-dark: #6F7E3B;
-  --coral:      #D47A7A;
+  --green:        #A6B05A;
+  --green-dark:   #7C8741;
+  --green-light:  #B8C46A;
+  --coral:        #D95C8A;
+
+  /* ── Overlays ── */
+  --hero-overlay: rgba(12, 10, 8, 0.46);
 
   /* ── Surfaces ── */
-  --surface: #FFFDF9;
-  --shadow-sm: 0 1px 3px rgba(36,28,24,0.07);
-  --shadow-md: 0 3px 10px rgba(36,28,24,0.09);
+  --shadow-sm: 0 1px 4px rgba(24,20,16,0.07);
+  --shadow-md: 0 3px 12px rgba(24,20,16,0.10);
 
   /* ── Radii ── */
   --r-sm: 8px;
   --r-md: 12px;
-  --r-lg: 18px;
+  --r-lg: 16px;
 
-  /* ── Spacing ── */
-  --sp-2: 2px;
-  --sp-4: 4px;
-  --sp-6: 6px;
-  --sp-8: 8px;
-  --sp-10: 10px;
+  /* ── Spacing (4pt scale) ── */
+  --sp-4:  4px;
+  --sp-6:  6px;
+  --sp-8:  8px;
   --sp-12: 12px;
-  --sp-14: 14px;
   --sp-16: 16px;
   --sp-20: 20px;
   --sp-24: 24px;
   --sp-32: 32px;
+  --sp-40: 40px;
 }
+
+/* ── Typography helpers ── */
+.display { font-family: 'Bebas Neue', 'Oswald', sans-serif; }
+.sans    { font-family: 'DM Sans', 'Manrope', system-ui, sans-serif; }
+
+/* ─────────────────────────────────────────────────────────────────── */
 
 html { scroll-behavior: smooth; }
 
 body {
   font-family: 'DM Sans', system-ui, sans-serif;
-  background: #D5CEc3;
-  color: var(--charcoal);
+  background: #D2CCBF;
+  color: var(--text);
   min-height: 100vh;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
 }
 
-::selection { background: var(--olive); color: var(--ivory); }
-
+::selection { background: var(--green); color: var(--surface); }
 ::-webkit-scrollbar { width: 0; }
 
-/* ─── Shell ─────────────────────────────────────────────────── */
+/* ─── Shell ────────────────────────────────────────────────────── */
 .shell {
-  max-width: 500px;
+  max-width: 480px;
   margin: 0 auto;
-  background: var(--cream);
+  background: var(--bg);
   min-height: 100vh;
 }
 
-@media (min-width: 580px) {
-  body { background: #C9C3B6; }
+@media (min-width: 560px) {
+  body { background: #C4BFB5; }
   .shell {
-    margin: 16px auto;
-    min-height: calc(100vh - 32px);
-    border-radius: 24px;
-    box-shadow: 0 16px 56px rgba(36,28,24,0.16);
+    margin: 14px auto;
+    min-height: calc(100vh - 28px);
+    border-radius: 22px;
+    box-shadow: 0 14px 48px rgba(24,20,16,0.15);
     overflow: hidden;
   }
 }
 
-/* ─── Hero ─────────────────────────────────────────────────── */
+/* ─── Hero ─────────────────────────────────────────────────────── */
 .hero {
   position: relative;
-  height: 260px;
+  height: 248px;
   overflow: hidden;
 }
 
@@ -100,12 +103,7 @@ body {
 .hero-overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(
-    160deg,
-    rgba(36,28,24,0.02) 0%,
-    rgba(36,28,24,0.40) 40%,
-    rgba(36,28,24,0.82) 100%
-  );
+  background: var(--hero-overlay);
 }
 
 .hero-content {
@@ -114,77 +112,61 @@ body {
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
-  padding: var(--sp-20) var(--sp-16) var(--sp-16);
+  padding: var(--sp-20) var(--sp-20) var(--sp-16);
 }
 
 .hero-eyebrow {
+  font-family: 'DM Sans', sans-serif;
   font-size: 10px;
   font-weight: 600;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: var(--olive);
+  color: var(--green);
   margin-bottom: var(--sp-6);
-  opacity: 0;
-  transform: translateY(6px);
-  animation: fadeUp 0.5s ease 0.1s forwards;
 }
 
 .hero-title {
-  font-family: 'Fraunces', Georgia, serif;
-  font-size: 42px;
-  font-weight: 900;
-  color: var(--ivory);
-  line-height: 1.05;
-  letter-spacing: -0.02em;
+  font-family: 'Bebas Neue', 'Oswald', sans-serif;
+  font-size: 52px;
+  font-weight: 400;
+  color: #fff;
+  line-height: 0.96;
+  letter-spacing: 0.01em;
   margin-bottom: var(--sp-8);
-  opacity: 0;
-  transform: translateY(8px);
-  animation: fadeUp 0.55s ease 0.18s forwards;
 }
 
 .hero-sub {
-  font-size: 14px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
   font-weight: 300;
-  color: rgba(251,248,242,0.68);
+  color: rgba(255,255,255,0.62);
   line-height: 1.55;
-  opacity: 0;
-  transform: translateY(6px);
-  animation: fadeUp 0.5s ease 0.28s forwards;
 }
 
 .hero-badge {
   position: absolute;
   top: var(--sp-14);
   right: var(--sp-14);
-  background: rgba(36,28,24,0.48);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(138,155,79,0.28);
-  color: var(--olive);
+  font-family: 'DM Sans', sans-serif;
   font-size: 9px;
   font-weight: 600;
   letter-spacing: 0.12em;
   text-transform: uppercase;
+  color: var(--green);
+  background: rgba(12,10,8,0.50);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(166,176,90,0.28);
   padding: 4px 10px;
   border-radius: 99px;
-  opacity: 0;
-  animation: fadeIn 0.4s ease 0.4s forwards;
 }
 
-@keyframes fadeUp {
-  to { opacity: 1; transform: translateY(0); }
-}
-
-@keyframes fadeIn {
-  to { opacity: 1; }
-}
-
-/* ─── Category Nav ─────────────────────────────────────────── */
+/* ─── Category Nav ─────────────────────────────────────────────── */
 .cat-nav {
   position: sticky;
   top: 0;
   z-index: 100;
-  background: var(--cream);
-  border-bottom: 1px solid var(--border);
+  background: var(--bg);
+  border-bottom: 1px solid var(--divider);
 }
 
 .cat-grid {
@@ -198,14 +180,14 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: var(--sp-3);
+  gap: var(--sp-4);
   padding: var(--sp-12) var(--sp-2) var(--sp-10);
   background: none;
   border: none;
   cursor: pointer;
   position: relative;
-  color: var(--muted);
-  transition: color 0.2s ease;
+  color: var(--text-2);
+  transition: color 0.18s ease;
 }
 
 .cat-btn::after {
@@ -216,39 +198,36 @@ body {
   transform: translateX(-50%);
   width: 0;
   height: 2.5px;
-  background: var(--olive);
+  background: var(--green);
   border-radius: 99px;
-  transition: width 0.22s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transition: width 0.22s cubic-bezier(0.34, 1.2, 0.64, 1);
 }
 
-.cat-btn.active { color: var(--charcoal); }
-.cat-btn.active::after { width: 28px; }
-
-.cat-btn:hover:not(.active) { color: var(--brown); }
+.cat-btn.active { color: var(--text); }
+.cat-btn.active::after { width: 26px; }
+.cat-btn:hover:not(.active) { color: var(--text); }
 
 .cat-icon {
-  width: 26px;
-  height: 26px;
+  width: 22px;
+  height: 22px;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: transform 0.2s ease;
 }
 
-.cat-btn:hover .cat-icon { transform: translateY(-1px); }
-
 .cat-label {
+  font-family: 'DM Sans', sans-serif;
   font-size: 10px;
-  font-weight: 500;
-  letter-spacing: 0.06em;
+  font-weight: 600;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   line-height: 1;
 }
 
-/* ─── Featured Strip ───────────────────────────────────────── */
+/* ─── Featured Strip ────────────────────────────────────────────── */
 .featured-strip {
-  margin: var(--sp-14) var(--sp-14) 0;
-  background: var(--charcoal);
+  margin: var(--sp-16) var(--sp-20) 0;
+  background: var(--text);
   border-radius: var(--r-md);
   padding: var(--sp-12) var(--sp-14);
   display: flex;
@@ -262,64 +241,64 @@ body {
   border-radius: var(--r-sm);
   overflow: hidden;
   flex-shrink: 0;
-  border: 1px solid rgba(251,248,242,0.1);
 }
 
 .featured-thumb img {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  display: block;
 }
 
 .featured-body { flex: 1; min-width: 0; }
 
 .featured-label {
+  font-family: 'DM Sans', sans-serif;
   font-size: 9px;
   font-weight: 600;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: var(--olive);
+  color: var(--green);
   margin-bottom: var(--sp-2);
 }
 
 .featured-name {
-  font-family: 'Fraunces', Georgia, serif;
-  font-size: 14px;
-  font-weight: 600;
-  color: var(--ivory);
-  line-height: 1.3;
+  font-family: 'Bebas Neue', 'Oswald', sans-serif;
+  font-size: 17px;
+  font-weight: 400;
+  color: var(--surface);
+  letter-spacing: 0.02em;
+  line-height: 1.1;
 }
 
-.featured-meta {
+.featured-bottom {
   display: flex;
   align-items: baseline;
-  gap: var(--sp-4);
+  gap: var(--sp-6);
   margin-top: var(--sp-4);
 }
 
 .featured-price {
-  font-family: 'Fraunces', Georgia, serif;
-  font-size: 18px;
-  font-weight: 700;
-  color: var(--olive);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--green);
 }
 
 .featured-tagline {
+  font-family: 'DM Sans', sans-serif;
   font-size: 11px;
-  color: rgba(251,248,242,0.42);
+  color: rgba(251,248,242,0.38);
   line-height: 1.4;
 }
 
-/* ─── Menu Content ─────────────────────────────────────────── */
+/* ─── Menu Content ─────────────────────────────────────────────── */
 .menu-content {
-  padding: var(--sp-20) var(--sp-14) var(--sp-40);
+  padding: var(--sp-20) var(--sp-20) var(--sp-40);
 }
 
-/* ─── Menu Section ─────────────────────────────────────────── */
-.menu-section {
-  margin-bottom: var(--sp-32);
-}
-
+/* ─── Menu Section ─────────────────────────────────────────────── */
+.menu-section { margin-bottom: var(--sp-32); }
 .menu-section:last-child { margin-bottom: 0; }
 
 .section-header {
@@ -330,47 +309,40 @@ body {
 }
 
 .section-title {
-  font-family: 'Fraunces', Georgia, serif;
-  font-size: 32px;
-  font-weight: 700;
-  color: var(--charcoal);
-  letter-spacing: -0.02em;
+  font-family: 'Bebas Neue', 'Oswald', sans-serif;
+  font-size: 30px;
+  font-weight: 400;
+  color: var(--text);
+  letter-spacing: 0.02em;
   line-height: 1;
   white-space: nowrap;
-}
-
-.section-title-accent {
-  font-size: 18px;
-  color: var(--olive);
-  margin-left: var(--sp-2);
-  font-weight: 400;
 }
 
 .section-line {
   flex: 1;
   height: 1px;
-  background: var(--border-md);
-  margin-top: 4px;
+  background: var(--divider-md);
+  margin-top: 3px;
 }
 
-/* ─── Menu Item Row ────────────────────────────────────────── */
+/* ─── Menu Item Row ────────────────────────────────────────────── */
 .item-row {
   display: grid;
-  grid-template-columns: 88px minmax(0, 1fr) auto;
-  gap: var(--sp-12);
+  grid-template-columns: 84px minmax(0, 1fr) auto;
+  gap: var(--sp-14);
   padding: var(--sp-12) 0;
-  border-bottom: 1px solid var(--border);
+  border-bottom: 1px solid var(--divider);
   align-items: start;
 }
 
 .item-row:last-child { border-bottom: none; }
 
 .item-thumb {
-  width: 88px;
-  height: 72px;
+  width: 84px;
+  height: 64px;
   border-radius: var(--r-sm);
   overflow: hidden;
-  background: var(--beige);
+  background: var(--thumb-bg);
   flex-shrink: 0;
 }
 
@@ -392,34 +364,37 @@ body {
 }
 
 .item-name {
-  font-size: 16px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 15px;
   font-weight: 600;
-  color: var(--charcoal);
+  color: var(--text);
   line-height: 1.3;
   letter-spacing: -0.01em;
 }
 
 .item-badge {
   flex-shrink: 0;
-  font-size: 8.5px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 8px;
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  padding: 3px 8px;
+  padding: 3px 7px;
   border-radius: 99px;
-  background: var(--olive);
-  color: var(--ivory);
+  background: var(--green);
+  color: var(--surface);
   white-space: nowrap;
-  margin-top: 1px;
+  margin-top: 2px;
 }
 
-.item-badge.coral { background: var(--coral); color: var(--ivory); }
+.item-badge.coral { background: var(--coral); color: #fff; }
 
 .item-desc {
-  font-size: 13px;
-  color: var(--muted);
-  line-height: 1.55;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 12px;
   font-weight: 300;
+  color: var(--text-2);
+  line-height: 1.58;
 }
 
 .item-price-col {
@@ -427,95 +402,107 @@ body {
   flex-direction: column;
   align-items: flex-end;
   justify-content: flex-start;
-  gap: var(--sp-4);
-  padding-top: 2px;
+  gap: 2px;
+  padding-top: 1px;
+  min-width: 44px;
 }
 
 .item-price {
-  font-family: 'Fraunces', Georgia, serif;
-  font-size: 18px;
-  font-weight: 700;
-  color: var(--charcoal);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text);
   letter-spacing: -0.02em;
   white-space: nowrap;
 }
 
 .item-price-sub {
-  font-size: 10px;
-  color: var(--muted);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 9px;
   font-weight: 400;
+  color: var(--text-2);
   letter-spacing: 0.04em;
 }
 
-/* ─── Footer ───────────────────────────────────────────────── */
+/* ─── Footer ──────────────────────────────────────────────────── */
 .footer {
   text-align: center;
-  padding: var(--sp-24) var(--sp-16) var(--sp-36);
-  border-top: 1px solid var(--border);
+  padding: var(--sp-24) var(--sp-20) var(--sp-36);
+  border-top: 1px solid var(--divider);
 }
 
 .footer-logo {
-  font-family: 'Fraunces', Georgia, serif;
-  font-size: 17px;
-  font-weight: 700;
-  letter-spacing: -0.02em;
-  color: var(--charcoal);
+  font-family: 'Bebas Neue', 'Oswald', sans-serif;
+  font-size: 20px;
+  font-weight: 400;
+  letter-spacing: 0.04em;
+  color: var(--text);
   margin-bottom: var(--sp-4);
 }
 
-.footer-logo span { color: var(--olive); }
+.footer-logo span { color: var(--green); }
 
 .footer-divider {
-  width: 32px;
+  width: 28px;
   height: 2px;
-  background: var(--olive);
-  margin: var(--sp-10) auto var(--sp-10);
+  background: var(--green);
+  margin: var(--sp-10) auto;
   border-radius: 99px;
-  opacity: 0.7;
+  opacity: 0.6;
 }
 
 .footer-sub {
+  font-family: 'DM Sans', sans-serif;
   font-size: 11px;
-  color: var(--muted);
-  line-height: 1.6;
+  color: var(--text-2);
+  line-height: 1.7;
   letter-spacing: 0.02em;
 }
 `
 
 // ─── SVG Icons ────────────────────────────────────────────────────────────────
-function Icon({ name, size = 18 }: { name: string; size?: number }) {
+function Icon({ name, size = 16 }: { name: string; size?: number }) {
   const s = size
   const icons: Record<string, JSX.Element> = {
     coffee: (
-      <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M17 8h1a4 4 0 1 1 0 8h-1"/><path d="M3 8h14v9a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4Z"/><line x1="6" y1="2" x2="6" y2="4"/><line x1="10" y1="2" x2="10" y2="4"/><line x1="14" y1="2" x2="14" y2="4"/>
+      <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M17 8h1a4 4 0 1 1 0 8h-1"/><path d="M3 8h14v9a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4Z"/>
+        <line x1="6" y1="2" x2="6" y2="4"/><line x1="10" y1="2" x2="10" y2="4"/><line x1="14" y1="2" x2="14" y2="4"/>
       </svg>
     ),
     sun: (
-      <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-        <circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/>
+      <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round">
+        <circle cx="12" cy="12" r="4"/>
+        <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/>
       </svg>
     ),
     utensils: (
-      <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"/><path d="M7 2v20"/><path d="M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7"/>
+      <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"/><path d="M7 2v20"/>
+        <path d="M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7"/>
       </svg>
     ),
     cake: (
-      <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M20 21v-8a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8"/><path d="M4 16s.5-1 2-1 2.5 2 4 2 2.5-2 4-2 2.5 2 4 2 2-1 2-1"/><path d="M2 21h20"/><path d="M7 8v2M12 8v2M17 8v2M7 4h.01M12 4h.01M17 4h.01"/>
+      <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M20 21v-8a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8"/>
+        <path d="M4 16s.5-1 2-1 2.5 2 4 2 2.5-2 4-2 2.5 2 4 2 2-1 2-1"/>
+        <path d="M2 21h20"/>
+        <path d="M7 8v2M12 8v2M17 8v2M7 4h.01M12 4h.01M17 4h.01"/>
       </svg>
     ),
     beverage: (
-      <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M8 2h8l-1 9H9L8 2Z"/><path d="M12 11v11"/><path d="M5 2c0 1.7 1.4 3 3 3s3-1.3 3-3"/><path d="M19 2c0 1.7-1.4 3-3 3s-3-1.3-3-3"/>
+      <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M8 2h8l-1 9H9L8 2Z"/>
+        <path d="M12 11v11"/>
+        <path d="M5 2c0 1.7 1.4 3 3 3s3-1.3 3-3"/>
+        <path d="M19 2c0 1.7-1.4 3-3 3s-3-1.3-3-3"/>
       </svg>
     ),
   }
   return icons[name] ?? <span style={{ fontSize: s }}>○</span>
 }
 
-// ─── Hero ─────────────────────────────────────────────────────────────────────
+// ─── Hero ──────────────────────────────────────────────────────────────────
 function HeroSection() {
   return (
     <header className="hero">
@@ -535,7 +522,7 @@ function HeroSection() {
   )
 }
 
-// ─── Category Nav ─────────────────────────────────────────────────────────────
+// ─── Category Nav ───────────────────────────────────────────────────────────
 function CategoryNav({
   categories,
   activeId,
@@ -556,7 +543,7 @@ function CategoryNav({
             aria-current={activeId === cat.id ? 'page' : undefined}
           >
             <span className="cat-icon">
-              <Icon name={cat.icon} size={18} />
+              <Icon name={cat.icon} size={16} />
             </span>
             <span className="cat-label">{cat.label}</span>
           </button>
@@ -566,7 +553,7 @@ function CategoryNav({
   )
 }
 
-// ─── Featured Strip ────────────────────────────────────────────────────────────
+// ─── Featured Strip ─────────────────────────────────────────────────────────
 function FeaturedStrip() {
   return (
     <div className="featured-strip">
@@ -579,7 +566,7 @@ function FeaturedStrip() {
       <div className="featured-body">
         <div className="featured-label">★ Especial de la casa</div>
         <div className="featured-name">{featuredItem.name}</div>
-        <div className="featured-meta">
+        <div className="featured-bottom">
           <span className="featured-price">${featuredItem.price}</span>
           <span className="featured-tagline">El almuerzo perfecto</span>
         </div>
@@ -588,7 +575,7 @@ function FeaturedStrip() {
   )
 }
 
-// ─── Menu Item Row ─────────────────────────────────────────────────────────────
+// ─── Menu Item Row ──────────────────────────────────────────────────────────
 function MenuItemRow({ item }: { item: MenuItem }) {
   const isCoral = item.badge === 'Especial'
   return (
@@ -613,7 +600,7 @@ function MenuItemRow({ item }: { item: MenuItem }) {
   )
 }
 
-// ─── Menu Section ─────────────────────────────────────────────────────────────
+// ─── Menu Section ───────────────────────────────────────────────────────────
 function MenuSection({ category }: { category: Category }) {
   return (
     <section
@@ -623,7 +610,7 @@ function MenuSection({ category }: { category: Category }) {
     >
       <div className="section-header">
         <h2 className="section-title" id={`title-${category.id}`}>
-          {category.label}
+          {category.label.toUpperCase()}
         </h2>
         <div className="section-line" />
       </div>
@@ -634,7 +621,7 @@ function MenuSection({ category }: { category: Category }) {
   )
 }
 
-// ─── Footer ────────────────────────────────────────────────────────────────────
+// ─── Footer ─────────────────────────────────────────────────────────────────
 function Footer() {
   return (
     <footer className="footer">
@@ -646,25 +633,21 @@ function Footer() {
   )
 }
 
-// ─── App ──────────────────────────────────────────────────────────────────────
+// ─── App ────────────────────────────────────────────────────────────────────
 export default function App() {
   const [activeCategory, setActiveCategory] = useState(categories[0].id)
 
   const scrollToCategory = useCallback((id: string) => {
     setActiveCategory(id)
     const el = document.getElementById(`cat-${id}`)
-    if (el) {
-      el.scrollIntoView({ behavior: 'smooth', block: 'start' })
-    }
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' })
   }, [])
 
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            setActiveCategory(entry.target.id.replace('cat-', ''))
-          }
+          if (entry.isIntersecting) setActiveCategory(entry.target.id.replace('cat-', ''))
         })
       },
       { rootMargin: '-30% 0px -65% 0px', threshold: 0 }
