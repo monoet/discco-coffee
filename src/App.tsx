@@ -101,11 +101,11 @@ body {
   display: grid;
   place-items: center;
   background:
-    radial-gradient(circle at 50% 38%, rgba(255,255,255,0.10) 0 1px, transparent 2px),
-    radial-gradient(circle at 50% 42%, rgba(158,173,61,0.18), transparent 34%),
-    linear-gradient(145deg, rgba(32,28,23,0.98), rgba(16,14,12,0.96));
-  color: #fff;
-  animation: disccoSplashOut 480ms ease 1120ms forwards;
+    radial-gradient(circle at 50% 38%, rgba(255,255,255,0.92), rgba(255,255,255,0.58) 48%, rgba(255,255,255,0.32) 100%),
+    rgba(255,255,255,0.74);
+  color: var(--text);
+  backdrop-filter: blur(18px) saturate(0.9);
+  animation: disccoSplashOut 520ms ease 1620ms forwards;
 }
 
 .loading-inner {
@@ -121,7 +121,7 @@ body {
   position: absolute;
   width: 156px;
   height: 156px;
-  border: 1px solid rgba(255,255,255,0.18);
+  border: 1px solid rgba(24,20,16,0.10);
   border-radius: 999px;
   animation: loadingBreath 1800ms ease-in-out infinite;
 }
@@ -130,7 +130,7 @@ body {
   content: '';
   position: absolute;
   inset: 16px;
-  border: 1px solid rgba(255,255,255,0.09);
+  border: 1px solid rgba(24,20,16,0.06);
   border-radius: inherit;
 }
 
@@ -149,7 +149,7 @@ body {
   width: 1px;
   height: 28px;
   border-radius: 99px;
-  background: rgba(255,255,255,0.48);
+  background: rgba(24,20,16,0.22);
   transform-origin: bottom;
   animation: steamRise 1700ms ease-in-out infinite;
 }
@@ -171,10 +171,11 @@ body {
   letter-spacing: 0.015em;
   line-height: 0.9;
   text-transform: uppercase;
+  color: rgba(24,20,16,0.74);
 }
 
 .loading-brand span {
-  color: rgba(255,255,255,0.62);
+  color: rgba(24,20,16,0.42);
 }
 
 .loading-kicker {
@@ -183,7 +184,7 @@ body {
   font-weight: 600;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: var(--green-light);
+  color: rgba(111,123,45,0.58);
 }
 
 .loading-text {
@@ -192,7 +193,7 @@ body {
   font-weight: 600;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: rgba(255,255,255,0.72);
+  color: rgba(24,20,16,0.46);
 }
 
 .loading-dotline {
@@ -201,7 +202,7 @@ body {
   margin: var(--sp-18) auto 0;
   overflow: hidden;
   border-radius: 99px;
-  background: rgba(255,255,255,0.14);
+  background: rgba(24,20,16,0.09);
 }
 
 .loading-dotline::after {
@@ -210,7 +211,7 @@ body {
   width: 32px;
   height: 100%;
   border-radius: inherit;
-  background: var(--green);
+  background: rgba(111,123,45,0.56);
   animation: loadingLine 1200ms ease-in-out infinite;
 }
 
