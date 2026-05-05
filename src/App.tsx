@@ -1,449 +1,489 @@
-import { useState, useEffect } from 'react'
-import { menuData, featuredItem, type Category } from './data/menu'
+import { useState, useEffect, useCallback } from 'react'
+import { categories, featuredItem, type Category, type MenuItem } from './data/menu'
 
 // ─── Styles ─────────────────────────────────────────────────────────────────
 const css = `
-  @import url('https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600&family=Space+Grotesk:wght@400;500;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600&family=Space+Grotesk:wght@400;500;700&display=swap');
 
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-  :root {
-    --bg: #F7F4EF;
-    --surface: #FFFFFF;
-    --text: #1A1714;
-    --text-muted: #7A7166;
-    --accent: #C8FF00;
-    --accent-pink: #FFB5C5;
-    --border: #E8E3DC;
-    --shadow: 0 2px 12px rgba(26,23,20,0.07);
-    --radius: 16px;
-    --radius-sm: 10px;
-  }
+:root {
+  --bg: #F5EFE4;
+  --surface: #FFFDF7;
+  --text: #171412;
+  --muted: #6F6860;
+  --border: rgba(23, 20, 18, 0.12);
+  --accent: #C8FF00;
+  --pink: #FF4FA3;
+  --shadow: 0 1px 4px rgba(23,20,18,0.06);
+  --radius: 14px;
+  --radius-sm: 10px;
+  --nav-h: 72px;
+}
 
-  html { scroll-behavior: smooth; }
+html { scroll-behavior: smooth; }
 
-  body {
-    font-family: 'Instrument Sans', system-ui, sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    min-height: 100vh;
-    -webkit-font-smoothing: antialiased;
-  }
+body {
+  font-family: 'Instrument Sans', system-ui, sans-serif;
+  background: #E8E2D4;
+  color: var(--text);
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
 
-  ::selection { background: var(--accent); color: var(--text); }
+::selection { background: var(--accent); color: var(--text); }
 
-  ::-webkit-scrollbar { width: 4px; }
-  ::-webkit-scrollbar-track { background: transparent; }
-  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 99px; }
+::-webkit-scrollbar { width: 0; }
 
-  /* ─── Layout ─────────────────────────────────────────────── */
-  .app {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    min-height: 100vh;
-  }
+/* ─── Shell ─────────────────────────────────────────────── */
+.shell {
+  max-width: 480px;
+  margin: 0 auto;
+  background: var(--bg);
+  min-height: 100vh;
+  position: relative;
+}
 
-  .menu-shell {
-    width: 100%;
-    max-width: 520px;
-    background: var(--bg);
-    min-height: 100vh;
-    position: relative;
-  }
-
-  @media (min-width: 640px) {
-    body { background: #EDE9E1; }
-    .menu-shell {
-      margin: 24px auto;
-      min-height: calc(100vh - 48px);
-      border-radius: 32px;
-      box-shadow: 0 8px 40px rgba(26,23,20,0.12);
-      overflow: hidden;
-    }
-  }
-
-  /* ─── Hero ───────────────────────────────────────────────── */
-  .hero {
-    position: relative;
-    padding: 48px 24px 32px;
-    text-align: center;
+@media (min-width: 600px) {
+  body { background: #D9D3C5; }
+  .shell {
+    margin: 20px auto;
+    min-height: calc(100vh - 40px);
+    border-radius: 28px;
+    box-shadow: 0 12px 48px rgba(23,20,18,0.14);
     overflow: hidden;
   }
+}
 
-  .hero::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background:
-      radial-gradient(ellipse 80% 60% at 50% 0%, rgba(200,255,0,0.15) 0%, transparent 70%),
-      linear-gradient(180deg, #F0ECD9 0%, var(--bg) 100%);
-    pointer-events: none;
-  }
+/* ─── Hero ──────────────────────────────────────────────── */
+.hero {
+  position: relative;
+  height: 240px;
+  overflow: hidden;
+}
 
-  .hero-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    background: var(--text);
-    color: var(--accent);
-    font-size: 11px;
-    font-weight: 600;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    padding: 5px 12px;
-    border-radius: 99px;
-    margin-bottom: 20px;
-  }
+.hero-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
 
-  .hero-logo {
-    font-family: 'Space Grotesk', sans-serif;
-    font-size: 36px;
-    font-weight: 700;
-    letter-spacing: -0.03em;
-    line-height: 1;
-    margin-bottom: 8px;
-  }
+.hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    rgba(23,20,18,0.05) 0%,
+    rgba(23,20,18,0.55) 60%,
+    rgba(23,20,18,0.88) 100%
+  );
+}
 
-  .hero-logo span { color: var(--accent); }
+.hero-content {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 20px 20px 18px;
+}
 
-  .hero-tagline {
-    font-size: 15px;
-    color: var(--text-muted);
-    font-weight: 400;
-    line-height: 1.5;
-    max-width: 280px;
-    margin: 0 auto 28px;
-  }
+.hero-label {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  color: var(--accent);
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
 
-  .hero-visual {
-    display: flex;
-    justify-content: center;
-    gap: 12px;
-    position: relative;
-    z-index: 1;
-  }
+.hero-title {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 26px;
+  font-weight: 700;
+  color: #fff;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  margin-bottom: 6px;
+}
 
-  .hero-img-block {
-    width: 120px;
-    height: 140px;
-    border-radius: var(--radius);
-    background: linear-gradient(145deg, #D4C9A8 0%, #C8B98A 100%);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 48px;
-    box-shadow: var(--shadow);
-    border: 1px solid rgba(255,255,255,0.4);
-  }
+.hero-sub {
+  font-size: 13px;
+  color: rgba(255,255,255,0.72);
+  line-height: 1.45;
+}
 
-  .hero-img-block:nth-child(2) {
-    width: 90px;
-    height: 110px;
-    font-size: 38px;
-    align-self: flex-end;
-    background: linear-gradient(145deg, #D9CBB5 0%, #C9A882 100%);
-  }
+.hero-badge {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: rgba(23,20,18,0.55);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(200,255,0,0.3);
+  color: var(--accent);
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 5px 10px;
+  border-radius: 99px;
+}
 
-  /* ─── Category Tabs ──────────────────────────────────────── */
-  .tabs-bar {
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    background: var(--bg);
-    border-bottom: 1px solid var(--border);
-    padding: 0 16px;
-  }
+/* ─── Category Nav ──────────────────────────────────────── */
+.cat-nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
+}
 
-  .tabs-scroll {
-    display: flex;
-    gap: 4px;
-    overflow-x: auto;
-    padding: 10px 0;
-    scrollbar-width: none;
-  }
+.cat-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 0;
+  padding: 0 8px;
+}
 
-  .tabs-scroll::-webkit-scrollbar { display: none; }
+.cat-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 10px 4px 10px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  position: relative;
+  color: var(--muted);
+  transition: color 0.15s;
+}
 
-  .tab-btn {
-    flex-shrink: 0;
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    padding: 8px 16px;
-    border-radius: 99px;
-    border: 1.5px solid transparent;
-    background: transparent;
-    font-family: 'Instrument Sans', sans-serif;
-    font-size: 13.5px;
-    font-weight: 500;
-    color: var(--text-muted);
-    cursor: pointer;
-    transition: all 0.2s ease;
-    white-space: nowrap;
-  }
+.cat-btn::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 2px;
+  background: var(--accent);
+  border-radius: 99px;
+  transition: width 0.2s ease;
+}
 
-  .tab-btn:hover { color: var(--text); background: rgba(200,255,0,0.12); }
+.cat-btn.active { color: var(--text); }
+.cat-btn.active::after { width: 24px; }
 
-  .tab-btn.active {
-    background: var(--text);
-    color: var(--accent);
-    border-color: var(--text);
-  }
+.cat-icon {
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+}
 
-  /* ─── Menu Sections ───────────────────────────────────────── */
-  .menu-content { padding: 0 16px 40px; }
+.cat-label {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  line-height: 1;
+}
 
-  .category-section { padding-top: 32px; }
+/* ─── Featured Strip ────────────────────────────────────── */
+.featured-strip {
+  margin: 14px 14px 0;
+  background: var(--text);
+  border-radius: var(--radius);
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
 
-  .category-title {
-    font-family: 'Space Grotesk', sans-serif;
-    font-size: 22px;
-    font-weight: 700;
-    letter-spacing: -0.02em;
-    margin-bottom: 16px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
+.featured-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  flex-shrink: 0;
+}
 
-  .category-title::after {
-    content: '';
-    flex: 1;
-    height: 1px;
-    background: var(--border);
-    margin-left: 4px;
-  }
+.featured-icon img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
 
-  /* ─── Menu Item Card ─────────────────────────────────────── */
-  .item-card {
-    display: flex;
-    gap: 14px;
-    background: var(--surface);
-    border-radius: var(--radius);
-    padding: 14px;
-    margin-bottom: 10px;
-    box-shadow: var(--shadow);
-    border: 1px solid var(--border);
-    cursor: pointer;
-    transition: transform 0.15s ease, box-shadow 0.15s ease;
-    position: relative;
-    overflow: hidden;
-  }
+.featured-info { flex: 1; min-width: 0; }
 
-  .item-card:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 4px 20px rgba(26,23,20,0.1);
-  }
+.featured-label {
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 3px;
+}
 
-  .item-card:active { transform: scale(0.99); }
+.featured-name {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  color: #fff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
 
-  .item-thumb {
-    width: 72px;
-    height: 72px;
-    border-radius: var(--radius-sm);
-    background: linear-gradient(145deg, #E8E2D0, #D5CCB8);
-    flex-shrink: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 28px;
-  }
+.featured-price {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--accent);
+  flex-shrink: 0;
+}
 
-  .item-body { flex: 1; min-width: 0; }
+.featured-price span {
+  font-size: 11px;
+  font-weight: 400;
+  color: rgba(255,255,255,0.5);
+  margin-left: 2px;
+}
 
-  .item-header {
-    display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-    gap: 8px;
-    margin-bottom: 4px;
-  }
+/* ─── Menu Content ───────────────────────────────────────── */
+.menu-content {
+  padding: 18px 14px 40px;
+}
 
-  .item-name {
-    font-weight: 600;
-    font-size: 15px;
-    line-height: 1.3;
-  }
+.menu-section {
+  margin-bottom: 28px;
+}
 
-  .item-badge {
-    flex-shrink: 0;
-    font-size: 9px;
-    font-weight: 700;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    padding: 3px 8px;
-    border-radius: 99px;
-    background: var(--accent);
-    color: var(--text);
-  }
+.menu-section:last-child { margin-bottom: 0; }
 
-  .item-badge.pink { background: var(--accent-pink); }
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+}
 
-  .item-desc {
-    font-size: 12.5px;
-    color: var(--text-muted);
-    line-height: 1.45;
-    margin-bottom: 8px;
-  }
+.section-title {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+}
 
-  .item-price {
-    font-family: 'Space Grotesk', sans-serif;
-    font-size: 16px;
-    font-weight: 700;
-    color: var(--text);
-  }
+.section-line {
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
 
-  .item-price span { font-size: 12px; font-weight: 400; color: var(--text-muted); }
+/* ─── Menu Item Row ──────────────────────────────────────── */
+.item-row {
+  display: flex;
+  gap: 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+}
 
-  /* ─── Featured Card ──────────────────────────────────────── */
-  .featured-section { padding: 32px 16px 8px; }
+.item-row:last-child { border-bottom: none; }
 
-  .featured-card {
-    background: var(--text);
-    color: var(--bg);
-    border-radius: 24px;
-    padding: 24px;
-    text-align: center;
-    position: relative;
-    overflow: hidden;
-  }
+.item-thumb {
+  width: 72px;
+  height: 58px;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  flex-shrink: 0;
+  background: #E8E2D4;
+}
 
-  .featured-card::before {
-    content: '';
-    position: absolute;
-    top: -40px;
-    right: -40px;
-    width: 160px;
-    height: 160px;
-    border-radius: 50%;
-    background: var(--accent);
-    opacity: 0.15;
-  }
+.item-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
 
-  .featured-badge {
-    display: inline-block;
-    font-size: 10px;
-    font-weight: 700;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--accent);
-    margin-bottom: 12px;
-  }
+.item-body { flex: 1; min-width: 0; }
 
-  .featured-name {
-    font-family: 'Space Grotesk', sans-serif;
-    font-size: 22px;
-    font-weight: 700;
-    margin-bottom: 8px;
-  }
+.item-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 3px;
+}
 
-  .featured-desc {
-    font-size: 13px;
-    color: rgba(247,244,239,0.65);
-    line-height: 1.5;
-    margin-bottom: 16px;
-  }
+.item-name {
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 1.3;
+}
 
-  .featured-price {
-    font-family: 'Space Grotesk', sans-serif;
-    font-size: 28px;
-    font-weight: 700;
-    color: var(--accent);
-  }
+.item-badge {
+  flex-shrink: 0;
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 3px 7px;
+  border-radius: 99px;
+  background: var(--accent);
+  color: var(--text);
+  white-space: nowrap;
+}
 
-  .featured-price span { font-size: 14px; font-weight: 400; opacity: 0.7; }
+.item-badge.pink { background: var(--pink); color: #fff; }
 
-  /* ─── Footer ─────────────────────────────────────────────── */
-  .footer {
-    text-align: center;
-    padding: 32px 16px 40px;
-    border-top: 1px solid var(--border);
-    margin-top: 16px;
-  }
+.item-desc {
+  font-size: 11.5px;
+  color: var(--muted);
+  line-height: 1.45;
+  margin-bottom: 5px;
+}
 
-  .footer-logo {
-    font-family: 'Space Grotesk', sans-serif;
-    font-size: 18px;
-    font-weight: 700;
-    letter-spacing: -0.02em;
-    margin-bottom: 4px;
-  }
+.item-price {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+}
 
-  .footer-logo span { color: var(--accent); }
+/* ─── Footer ────────────────────────────────────────────── */
+.footer {
+  text-align: center;
+  padding: 24px 14px 36px;
+  border-top: 1px solid var(--border);
+}
 
-  .footer-sub {
-    font-size: 12px;
-    color: var(--text-muted);
-  }
+.footer-logo {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin-bottom: 4px;
+}
 
-  .footer-divider {
-    width: 32px;
-    height: 2px;
-    background: var(--accent);
-    margin: 16px auto;
-    border-radius: 99px;
-  }
+.footer-logo span { color: var(--accent); }
+
+.footer-sub {
+  font-size: 11px;
+  color: var(--muted);
+  margin-bottom: 10px;
+}
+
+.footer-divider {
+  width: 28px;
+  height: 2px;
+  background: var(--accent);
+  margin: 0 auto 10px;
+  border-radius: 99px;
+}
 `
 
-// ─── Icon emojis (consistent, minimal) ────────────────────────────────────────
-const ICONS: Record<string, string> = {
-  cafe: '☕',
-  desayunos: '🥑',
-  platos: '🍽️',
-  postres: '🍰',
-  bebidas: '🥤',
-  logo: '◈',
+// ─── SVG Icons (inline, no extra deps) ───────────────────────────────────────
+function Icon({ name }: { name: string }) {
+  const icons: Record<string, JSX.Element> = {
+    coffee: (
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M17 8h1a4 4 0 1 1 0 8h-1"/>
+        <path d="M3 8h14v9a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4Z"/>
+        <line x1="6" y1="2" x2="6" y2="4"/>
+        <line x1="10" y1="2" x2="10" y2="4"/>
+        <line x1="14" y1="2" x2="14" y2="4"/>
+      </svg>
+    ),
+    sun: (
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <circle cx="12" cy="12" r="4"/>
+        <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/>
+      </svg>
+    ),
+    utensils: (
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"/>
+        <path d="M7 2v20"/>
+        <path d="M21 15V2v0a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7"/>
+      </svg>
+    ),
+    cake: (
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M20 21v-8a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8"/>
+        <path d="M4 16s.5-1 2-1 2.5 2 4 2 2.5-2 4-2 2.5 2 4 2 2-1 2-1"/>
+        <path d="M2 21h20"/>
+        <path d="M7 8v3"/>
+        <path d="M12 8v3"/>
+        <path d="M17 8v3"/>
+        <path d="M7 4h.01"/>
+        <path d="M12 4h.01"/>
+        <path d="M17 4h.01"/>
+      </svg>
+    ),
+    cup: (
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M17 8h1a4 4 0 1 1 0 8h-1"/>
+        <path d="M3 8h14v9a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4Z"/>
+        <line x1="6" y1="2" x2="6" y2="4"/>
+        <line x1="10" y1="2" x2="10" y2="4"/>
+        <line x1="14" y1="2" x2="14" y2="4"/>
+      </svg>
+    ),
+  }
+  return icons[name] ?? <span style={{ fontSize: 18 }}>○</span>
 }
 
 // ─── Hero ───────────────────────────────────────────────────────────────────
 function HeroSection() {
   return (
     <header className="hero">
-      <div className="hero-badge">
-        <span>◈</span> Menú demo
+      <img
+        className="hero-img"
+        src="https://images.unsplash.com/photo-1760163630058-aa71c91783bf?auto=format&fit=crop&w=1400&q=80"
+        alt="Discco Coffee — buen café, buen sonido"
+      />
+      <div className="hero-overlay" />
+      <div className="hero-content">
+        <p className="hero-label">Bienvenido</p>
+        <h1 className="hero-title">Buen café,<br />buen sonido</h1>
+        <p className="hero-sub">Café, desayunos y algo para escuchar.</p>
       </div>
-
-      <h1 className="hero-logo">
-        Discco <span>Coffee</span>
-      </h1>
-
-      <p className="hero-tagline">
-        Buen café. Buen sonido.<br />
-        Breakfast, lunch y algo para escuchar.
-      </p>
-
-      <div className="hero-visual" aria-hidden="true">
-        <div className="hero-img-block">☕</div>
-        <div className="hero-img-block">🥐</div>
-        <div className="hero-img-block">🎵</div>
-      </div>
+      <div className="hero-badge">Menú demo</div>
     </header>
   )
 }
 
-// ─── Category Tabs ────────────────────────────────────────────────────────────
-function CategoryTabs({
+// ─── Category Grid ───────────────────────────────────────────────────────────
+function CategoryNav({
   categories,
-  active,
+  activeId,
   onSelect,
 }: {
   categories: Category[]
-  active: string
+  activeId: string
   onSelect: (id: string) => void
 }) {
   return (
-    <nav className="tabs-bar" aria-label="Categorías del menú">
-      <div className="tabs-scroll">
+    <nav className="cat-nav" aria-label="Categorías">
+      <div className="cat-grid">
         {categories.map((cat) => (
           <button
             key={cat.id}
-            className={`tab-btn${active === cat.id ? ' active' : ''}`}
+            className={`cat-btn${activeId === cat.id ? ' active' : ''}`}
             onClick={() => onSelect(cat.id)}
-            aria-current={active === cat.id ? 'true' : undefined}
+            aria-current={activeId === cat.id ? 'page' : undefined}
           >
-            <span aria-hidden="true">{ICONS[cat.id] ?? '○'}</span>
-            {cat.name}
+            <span className="cat-icon">
+              <Icon name={cat.icon} />
+            </span>
+            <span className="cat-label">{cat.label}</span>
           </button>
         ))}
       </div>
@@ -451,37 +491,45 @@ function CategoryTabs({
   )
 }
 
-// ─── Menu Item Card ─────────────────────────────────────────────────────────
-function MenuItemCard({
-  item,
-  index,
-}: {
-  item: { id: string; name: string; description: string; price: number; badge?: string }
-  index: number
-}) {
-  const badgeClass = item.badge === 'Especial' ? ' pink' : ''
-
+// ─── Featured Strip ──────────────────────────────────────────────────────────
+function FeaturedStrip() {
   return (
-    <article
-      className="item-card"
-      role="article"
-      aria-label={`${item.name}, $${item.price}`}
-      style={{ animationDelay: `${index * 40}ms` }}
-    >
-      <div className="item-thumb" aria-hidden="true">
-        {ICONS.cafe}
+    <div className="featured-strip">
+      <div className="featured-icon">
+        <img
+          src="https://images.unsplash.com/photo-1759754147072-aff1923ba10f?auto=format&fit=crop&w=120&q=80"
+          alt="Cold Brew"
+        />
+      </div>
+      <div className="featured-info">
+        <div className="featured-label">★ Especial de la casa</div>
+        <div className="featured-name">{featuredItem.name}</div>
+      </div>
+      <div className="featured-price">
+        ${featuredItem.price}
+        <span>MXN</span>
+      </div>
+    </div>
+  )
+}
+
+// ─── Menu Item Row ───────────────────────────────────────────────────────────
+function MenuItemRow({ item }: { item: MenuItem }) {
+  const isPink = item.badge === 'Especial'
+  return (
+    <article className="item-row">
+      <div className="item-thumb">
+        <img src={item.image} alt={item.name} loading="lazy" />
       </div>
       <div className="item-body">
-        <div className="item-header">
+        <div className="item-top">
           <h3 className="item-name">{item.name}</h3>
           {item.badge && (
-            <span className={`item-badge${badgeClass}`}>{item.badge}</span>
+            <span className={`item-badge${isPink ? ' pink' : ''}`}>{item.badge}</span>
           )}
         </div>
         <p className="item-desc">{item.description}</p>
-        <div className="item-price">
-          ${item.price} <span>MXN</span>
-        </div>
+        <div className="item-price">${item.price}</div>
       </div>
     </article>
   )
@@ -490,37 +538,14 @@ function MenuItemCard({
 // ─── Menu Section ────────────────────────────────────────────────────────────
 function MenuSection({ category }: { category: Category }) {
   return (
-    <section
-      id={`cat-${category.id}`}
-      className="category-section"
-      aria-labelledby={`title-${category.id}`}
-    >
-      <h2 className="category-title" id={`title-${category.id}`}>
-        <span aria-hidden="true">{ICONS[category.id] ?? '○'}</span>
-        {category.name}
-      </h2>
-      {category.items.map((item, i) => (
-        <MenuItemCard key={item.id} item={item} index={i} />
+    <section id={`cat-${category.id}`} className="menu-section" aria-labelledby={`title-${category.id}`}>
+      <div className="section-header">
+        <h2 className="section-title" id={`title-${category.id}`}>{category.label}</h2>
+        <div className="section-line" />
+      </div>
+      {category.items.map((item) => (
+        <MenuItemRow key={item.id} item={item} />
       ))}
-    </section>
-  )
-}
-
-// ─── Featured Card ───────────────────────────────────────────────────────────
-function FeaturedSection() {
-  return (
-    <section className="featured-section" aria-labelledby="featured-title">
-      <h2 id="featured-title" className="category-title">
-        <span>★</span> Especial de la casa
-      </h2>
-      <article className="featured-card">
-        <div className="featured-badge">{featuredItem.badge}</div>
-        <h3 className="featured-name">{featuredItem.name}</h3>
-        <p className="featured-desc">{featuredItem.description}</p>
-        <div className="featured-price">
-          ${featuredItem.price} <span>MXN</span>
-        </div>
-      </article>
     </section>
   )
 }
@@ -531,17 +556,25 @@ function Footer() {
     <footer className="footer">
       <div className="footer-logo">Discco <span>Coffee</span></div>
       <div className="footer-sub">Demo de menú digital</div>
-      <div className="footer-divider" aria-hidden="true" />
-      <p className="footer-sub">Para acompañar una buena sesión.</p>
+      <div className="footer-divider" />
+      <div className="footer-sub">Para acompañar una buena sesión.</div>
     </footer>
   )
 }
 
-// ─── Main App ────────────────────────────────────────────────────────────────
+// ─── App ─────────────────────────────────────────────────────────────────────
 export default function App() {
-  const [activeCategory, setActiveCategory] = useState(menuData[0].id)
+  const [activeCategory, setActiveCategory] = useState(categories[0].id)
 
-  // Sync active tab with scroll
+  const scrollToCategory = useCallback((id: string) => {
+    setActiveCategory(id)
+    const el = document.getElementById(`cat-${id}`)
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    }
+  }, [])
+
+  // Track active category via IntersectionObserver
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
@@ -552,10 +585,10 @@ export default function App() {
           }
         })
       },
-      { rootMargin: '-40% 0px -55% 0px', threshold: 0 }
+      { rootMargin: '-35% 0px -60% 0px', threshold: 0 }
     )
 
-    menuData.forEach((cat) => {
+    categories.forEach((cat) => {
       const el = document.getElementById(`cat-${cat.id}`)
       if (el) observer.observe(el)
     })
@@ -563,36 +596,23 @@ export default function App() {
     return () => observer.disconnect()
   }, [])
 
-  const handleTabClick = (catId: string) => {
-    setActiveCategory(catId)
-    const el = document.getElementById(`cat-${catId}`)
-    if (el) {
-      el.scrollIntoView({ behavior: 'smooth', block: 'start' })
-    }
-  }
-
   return (
     <>
       <style>{css}</style>
-      <div className="app">
-        <main className="menu-shell" role="main">
-          <HeroSection />
-
-          <CategoryTabs
-            categories={menuData}
-            active={activeCategory}
-            onSelect={handleTabClick}
-          />
-
-          <div className="menu-content">
-            <FeaturedSection />
-            {menuData.map((cat) => (
-              <MenuSection key={cat.id} category={cat} />
-            ))}
-          </div>
-
-          <Footer />
+      <div className="shell">
+        <HeroSection />
+        <CategoryNav
+          categories={categories}
+          activeId={activeCategory}
+          onSelect={scrollToCategory}
+        />
+        <main className="menu-content">
+          <FeaturedStrip />
+          {categories.map((cat) => (
+            <MenuSection key={cat.id} category={cat} />
+          ))}
         </main>
+        <Footer />
       </div>
     </>
   )
