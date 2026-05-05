@@ -98,9 +98,11 @@ body {
   position: fixed;
   inset: 0;
   z-index: 300;
-  display: grid;
-  place-items: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   border: 0;
+  padding: var(--sp-32) var(--sp-24) calc(var(--sp-40) + env(safe-area-inset-bottom));
   background:
     radial-gradient(circle at 50% 38%, rgba(255,255,255,0.92), rgba(255,255,255,0.58) 48%, rgba(255,255,255,0.32) 100%),
     rgba(255,255,255,0.74);
@@ -205,12 +207,15 @@ body {
 }
 
 .loading-continue {
-  margin-top: var(--sp-12);
-  font-size: 10px;
-  font-weight: 800;
-  letter-spacing: 0.18em;
+  position: absolute;
+  left: var(--sp-24);
+  right: var(--sp-24);
+  bottom: calc(var(--sp-40) + env(safe-area-inset-bottom));
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: rgba(24,20,16,0.52);
+  color: rgba(24,20,16,0.42);
   animation: continuePulse 1700ms ease-in-out infinite;
 }
 
@@ -1033,11 +1038,10 @@ function LoadingScreen({
             <span>menú digital</span>
           </div>
           <div className="loading-kicker">discco café</div>
-          <div className="loading-text">Cargando el menú</div>
-          <div className="loading-continue">Toca para continuar</div>
           <div className="loading-dotline" aria-hidden="true" />
         </div>
       </div>
+      <div className="loading-continue">Toca para continuar</div>
     </button>
   )
 }
