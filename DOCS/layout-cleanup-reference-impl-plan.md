@@ -403,7 +403,7 @@ During implementation we can tune exact CSS values, but the visual hierarchy and
 Applied a second layout pass after visual review:
 
 - Reduced hero from tall poster treatment to a compact `2 / 1` editorial crop.
-- Softened accent green from neon yellow-green to a more organic cafe tone.
+- Softened accent green from neon yellow-green to a more organic café tone.
 - Increased vertical breathing room in the category rail without widening the horizontal layout.
 - Reworked the featured strip with calmer color, tighter radius, and more balanced internal padding.
 - Added a `Populares` highlight row with 5 items below the featured strip and before `Café`.

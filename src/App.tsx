@@ -100,12 +100,20 @@ body {
   z-index: 300;
   display: grid;
   place-items: center;
+  border: 0;
   background:
     radial-gradient(circle at 50% 38%, rgba(255,255,255,0.92), rgba(255,255,255,0.58) 48%, rgba(255,255,255,0.32) 100%),
     rgba(255,255,255,0.74);
   color: var(--text);
   backdrop-filter: blur(18px) saturate(0.9);
-  animation: disccoSplashOut 520ms ease 1620ms forwards;
+  cursor: pointer;
+  appearance: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.loading-screen.is-exiting {
+  pointer-events: none;
+  animation: disccoSplashOut 620ms ease forwards;
 }
 
 .loading-inner {
@@ -196,6 +204,16 @@ body {
   color: rgba(24,20,16,0.46);
 }
 
+.loading-continue {
+  margin-top: var(--sp-12);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(24,20,16,0.52);
+  animation: continuePulse 1700ms ease-in-out infinite;
+}
+
 .loading-dotline {
   width: 84px;
   height: 2px;
@@ -232,11 +250,17 @@ body {
   100% { transform: translateX(88px); opacity: 0.4; }
 }
 
+@keyframes continuePulse {
+  0%, 100% { opacity: 0.42; transform: translateY(0); }
+  50% { opacity: 0.78; transform: translateY(-1px); }
+}
+
 @keyframes disccoSplashOut {
   to {
     opacity: 0;
     visibility: hidden;
-    transform: scale(1.015);
+    transform: scale(1.01);
+    filter: blur(8px);
   }
 }
 
@@ -812,7 +836,7 @@ function HeroSection() {
       <img
         className="hero-img"
         src="https://images.unsplash.com/photo-1760163630058-aa71c91783bf?auto=format&fit=crop&w=1400&q=80"
-        alt="Discco Coffee — buen café, buen sonido"
+        alt="discco café — buen café, buen sonido"
       />
       <div className="hero-overlay" />
       <div className="hero-content">
@@ -952,7 +976,7 @@ function MenuSection({ category }: { category: Category }) {
 function Footer() {
   return (
     <footer className="footer">
-      <div className="footer-logo">Discco <span>Coffee</span></div>
+      <div className="footer-logo">discco <span>café</span></div>
       <div className="footer-divider" aria-hidden="true" />
       <p className="footer-sub">Demo de menú digital</p>
       <p className="footer-sub">Para acompañar una buena sesión.</p>
@@ -982,9 +1006,20 @@ function CartDock() {
   )
 }
 
-function LoadingScreen() {
+function LoadingScreen({
+  isExiting,
+  onContinue,
+}: {
+  isExiting: boolean
+  onContinue: () => void
+}) {
   return (
-    <div className="loading-screen" role="status" aria-live="polite">
+    <button
+      className={`loading-screen${isExiting ? ' is-exiting' : ''}`}
+      type="button"
+      onClick={onContinue}
+      aria-label="Toca para continuar al menú digital"
+    >
       <div className="loading-inner">
         <div className="loading-ring" aria-hidden="true" />
         <div className="loading-steam" aria-hidden="true">
@@ -997,12 +1032,13 @@ function LoadingScreen() {
             Demo de<br />
             <span>menú digital</span>
           </div>
-          <div className="loading-kicker">Discco Caffe</div>
+          <div className="loading-kicker">discco café</div>
           <div className="loading-text">Cargando el menú</div>
+          <div className="loading-continue">Toca para continuar</div>
           <div className="loading-dotline" aria-hidden="true" />
         </div>
       </div>
-    </div>
+    </button>
   )
 }
 
@@ -1010,6 +1046,7 @@ function LoadingScreen() {
 export default function App() {
   const [activeCategory, setActiveCategory] = useState(categories[0].id)
   const [showLoading, setShowLoading] = useState(true)
+  const [isLoadingExiting, setIsLoadingExiting] = useState(false)
 
   const scrollToCategory = useCallback((id: string) => {
     setActiveCategory(id)
@@ -1033,15 +1070,21 @@ export default function App() {
     return () => observer.disconnect()
   }, [])
 
-  useEffect(() => {
-    const timer = window.setTimeout(() => setShowLoading(false), 1650)
-    return () => window.clearTimeout(timer)
-  }, [])
+  const continueToMenu = useCallback(() => {
+    if (isLoadingExiting) return
+    setIsLoadingExiting(true)
+    window.setTimeout(() => setShowLoading(false), 620)
+  }, [isLoadingExiting])
 
   return (
     <>
       <style>{css}</style>
-      {showLoading && <LoadingScreen />}
+      {showLoading && (
+        <LoadingScreen
+          isExiting={isLoadingExiting}
+          onContinue={continueToMenu}
+        />
+      )}
       <div className="shell">
         <HeroSection />
         <CategoryNav
