@@ -93,6 +93,161 @@ body {
   }
 }
 
+/* ─── Loading Experience ───────────────────────────────────────── */
+.loading-screen {
+  position: fixed;
+  inset: 0;
+  z-index: 300;
+  display: grid;
+  place-items: center;
+  background:
+    radial-gradient(circle at 50% 38%, rgba(255,255,255,0.10) 0 1px, transparent 2px),
+    radial-gradient(circle at 50% 42%, rgba(158,173,61,0.18), transparent 34%),
+    linear-gradient(145deg, rgba(32,28,23,0.98), rgba(16,14,12,0.96));
+  color: #fff;
+  animation: disccoSplashOut 480ms ease 1120ms forwards;
+}
+
+.loading-inner {
+  position: relative;
+  width: min(78vw, 260px);
+  min-height: 220px;
+  display: grid;
+  place-items: center;
+  text-align: center;
+}
+
+.loading-ring {
+  position: absolute;
+  width: 156px;
+  height: 156px;
+  border: 1px solid rgba(255,255,255,0.18);
+  border-radius: 999px;
+  animation: loadingBreath 1800ms ease-in-out infinite;
+}
+
+.loading-ring::after {
+  content: '';
+  position: absolute;
+  inset: 16px;
+  border: 1px solid rgba(255,255,255,0.09);
+  border-radius: inherit;
+}
+
+.loading-steam {
+  position: absolute;
+  top: 28px;
+  left: 50%;
+  width: 54px;
+  height: 44px;
+  transform: translateX(-50%);
+}
+
+.loading-steam span {
+  position: absolute;
+  bottom: 0;
+  width: 1px;
+  height: 28px;
+  border-radius: 99px;
+  background: rgba(255,255,255,0.48);
+  transform-origin: bottom;
+  animation: steamRise 1700ms ease-in-out infinite;
+}
+
+.loading-steam span:nth-child(1) { left: 10px; animation-delay: 0ms; }
+.loading-steam span:nth-child(2) { left: 26px; height: 36px; animation-delay: 180ms; }
+.loading-steam span:nth-child(3) { left: 42px; animation-delay: 360ms; }
+
+.loading-copy {
+  position: relative;
+  z-index: 1;
+  transform: translateY(18px);
+}
+
+.loading-brand {
+  font-family: 'Bebas Neue', 'Oswald', sans-serif;
+  font-size: 44px;
+  font-weight: 400;
+  letter-spacing: 0.015em;
+  line-height: 0.9;
+  text-transform: uppercase;
+}
+
+.loading-brand span {
+  color: rgba(255,255,255,0.62);
+}
+
+.loading-kicker {
+  margin-top: var(--sp-8);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--green-light);
+}
+
+.loading-text {
+  margin-top: var(--sp-14);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.72);
+}
+
+.loading-dotline {
+  width: 84px;
+  height: 2px;
+  margin: var(--sp-18) auto 0;
+  overflow: hidden;
+  border-radius: 99px;
+  background: rgba(255,255,255,0.14);
+}
+
+.loading-dotline::after {
+  content: '';
+  display: block;
+  width: 32px;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--green);
+  animation: loadingLine 1200ms ease-in-out infinite;
+}
+
+@keyframes loadingBreath {
+  0%, 100% { transform: scale(0.96); opacity: 0.58; }
+  50% { transform: scale(1.03); opacity: 0.9; }
+}
+
+@keyframes steamRise {
+  0% { transform: translateY(10px) scaleY(0.5) rotate(0deg); opacity: 0; }
+  35% { opacity: 0.72; }
+  100% { transform: translateY(-18px) scaleY(1) rotate(8deg); opacity: 0; }
+}
+
+@keyframes loadingLine {
+  0% { transform: translateX(-34px); opacity: 0.4; }
+  50% { opacity: 1; }
+  100% { transform: translateX(88px); opacity: 0.4; }
+}
+
+@keyframes disccoSplashOut {
+  to {
+    opacity: 0;
+    visibility: hidden;
+    transform: scale(1.015);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .loading-screen,
+  .loading-ring,
+  .loading-steam span,
+  .loading-dotline::after {
+    animation: none;
+  }
+}
+
 /* ─── Hero ─────────────────────────────────────────────────────── */
 .hero {
   position: relative;
@@ -826,9 +981,34 @@ function CartDock() {
   )
 }
 
+function LoadingScreen() {
+  return (
+    <div className="loading-screen" role="status" aria-live="polite">
+      <div className="loading-inner">
+        <div className="loading-ring" aria-hidden="true" />
+        <div className="loading-steam" aria-hidden="true">
+          <span />
+          <span />
+          <span />
+        </div>
+        <div className="loading-copy">
+          <div className="loading-brand">
+            Demo de<br />
+            <span>menú digital</span>
+          </div>
+          <div className="loading-kicker">Discco Caffe</div>
+          <div className="loading-text">Cargando el menú</div>
+          <div className="loading-dotline" aria-hidden="true" />
+        </div>
+      </div>
+    </div>
+  )
+}
+
 // ─── App ────────────────────────────────────────────────────────────────────
 export default function App() {
   const [activeCategory, setActiveCategory] = useState(categories[0].id)
+  const [showLoading, setShowLoading] = useState(true)
 
   const scrollToCategory = useCallback((id: string) => {
     setActiveCategory(id)
@@ -852,9 +1032,15 @@ export default function App() {
     return () => observer.disconnect()
   }, [])
 
+  useEffect(() => {
+    const timer = window.setTimeout(() => setShowLoading(false), 1650)
+    return () => window.clearTimeout(timer)
+  }, [])
+
   return (
     <>
       <style>{css}</style>
+      {showLoading && <LoadingScreen />}
       <div className="shell">
         <HeroSection />
         <CategoryNav
