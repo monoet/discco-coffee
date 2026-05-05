@@ -415,3 +415,15 @@ Validation:
 
 - `npm run build` passed.
 - `graphify` code graph was rebuilt after code changes.
+
+### Follow-up Calibration — 2026-05-05
+
+Applied a smaller-scale correction after mobile review:
+
+- Restored category rail to full-width button range with no horizontal side padding.
+- Reduced category rail vertical density by roughly 5%.
+- Reduced hero height by roughly 15%.
+- Reduced hero title scale substantially so the display copy fits the 2:1 crop.
+- Hid the order CTA dock for this demo because checkout is out of scope.
+- Reduced inactive CTA dimensions by roughly 50% for future reactivation.
+- Reduced menu section/title rhythm and item typography/vertical padding for a less oversized list.

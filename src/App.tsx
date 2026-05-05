@@ -97,8 +97,8 @@ body {
 .hero {
   position: relative;
   aspect-ratio: 2 / 1;
-  min-height: 210px;
-  max-height: 248px;
+  min-height: 178px;
+  max-height: 211px;
   overflow: hidden;
 }
 
@@ -121,13 +121,13 @@ body {
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
-  padding: var(--sp-20);
-  max-width: 48%;
+  padding: var(--sp-18) var(--sp-20);
+  max-width: 46%;
 }
 
 .hero-eyebrow {
   font-family: 'DM Sans', sans-serif;
-  font-size: 12px;
+  font-size: 10px;
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -137,18 +137,18 @@ body {
 
 .hero-title {
   font-family: 'Bebas Neue', 'Oswald', sans-serif;
-  font-size: 52px;
+  font-size: 32px;
   font-weight: 400;
   color: #fff;
   line-height: 0.92;
   letter-spacing: 0;
-  margin-bottom: var(--sp-10);
+  margin-bottom: var(--sp-8);
   text-wrap: balance;
 }
 
 .hero-sub {
   font-family: 'DM Sans', sans-serif;
-  font-size: 14px;
+  font-size: 12px;
   font-weight: 400;
   color: rgba(255,255,255,0.76);
   line-height: 1.42;
@@ -167,7 +167,7 @@ body {
 .cat-grid {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
-  padding: var(--sp-8) var(--sp-10) 0;
+  padding: var(--sp-6) 0 0;
 }
 
 .cat-btn {
@@ -175,9 +175,9 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: var(--sp-8);
-  min-height: 78px;
-  padding: var(--sp-8) var(--sp-2) var(--sp-18);
+  gap: var(--sp-6);
+  min-height: 74px;
+  padding: var(--sp-6) 0 var(--sp-16);
   background: none;
   border: none;
   cursor: pointer;
@@ -351,12 +351,12 @@ body {
 
 /* ─── Menu Content ─────────────────────────────────────────────── */
 .menu-content {
-  padding: var(--sp-16) var(--sp-20) calc(116px + env(safe-area-inset-bottom));
+  padding: var(--sp-14) var(--sp-20) var(--sp-40);
 }
 
 /* ─── Menu Section ─────────────────────────────────────────────── */
 .menu-section {
-  margin-bottom: var(--sp-32);
+  margin-bottom: var(--sp-28);
   scroll-margin-top: 86px;
 }
 .menu-section:first-of-type { margin-top: var(--sp-4); }
@@ -366,12 +366,12 @@ body {
   display: flex;
   align-items: center;
   gap: var(--sp-10);
-  margin-bottom: var(--sp-16);
+  margin-bottom: var(--sp-14);
 }
 
 .section-title {
   font-family: 'Bebas Neue', 'Oswald', sans-serif;
-  font-size: 34px;
+  font-size: 31px;
   font-weight: 400;
   color: var(--text);
   letter-spacing: 0;
@@ -391,7 +391,7 @@ body {
   display: grid;
   grid-template-columns: 96px minmax(0, 1fr) auto;
   gap: var(--sp-16);
-  padding: var(--sp-14) 0 var(--sp-18);
+  padding: 13px 0 var(--sp-16);
   border-bottom: 1px solid var(--divider);
   align-items: start;
 }
@@ -418,7 +418,7 @@ body {
 
 .item-name {
   font-family: 'DM Sans', sans-serif;
-  font-size: 17px;
+  font-size: 16px;
   font-weight: 700;
   color: var(--text);
   line-height: 1.08;
@@ -428,7 +428,7 @@ body {
 
 .item-desc {
   font-family: 'DM Sans', sans-serif;
-  font-size: 14px;
+  font-size: 13.3px;
   font-weight: 400;
   color: var(--text-2);
   line-height: 1.38;
@@ -524,23 +524,24 @@ body {
 .cta-dock {
   position: sticky;
   bottom: 0;
-  padding: 12px var(--sp-20) calc(20px + env(safe-area-inset-bottom));
+  display: none;
+  padding: var(--sp-6) var(--sp-20) calc(var(--sp-10) + env(safe-area-inset-bottom));
   background: linear-gradient(180deg, rgba(245,241,232,0) 0%, rgba(245,241,232,0.94) 24%, rgba(245,241,232,1) 100%);
   z-index: 120;
 }
 
 .cta-button {
   width: 100%;
-  height: 72px;
+  height: 36px;
   border: none;
   border-radius: 999px;
   background: var(--green);
   color: var(--text);
   display: grid;
-  grid-template-columns: 44px 1fr 28px;
+  grid-template-columns: 22px 1fr 14px;
   align-items: center;
   gap: 10px;
-  padding: 0 22px;
+  padding: 0 var(--sp-12);
   box-shadow: 0 12px 24px rgba(168, 191, 0, 0.22);
 }
 
@@ -555,7 +556,7 @@ body {
 
 .cta-label {
   font-family: 'DM Sans', sans-serif;
-  font-size: 18px;
+  font-size: 10px;
   font-weight: 800;
   letter-spacing: 0.06em;
   text-transform: uppercase;
@@ -564,15 +565,15 @@ body {
 
 @media (max-width: 399px) {
   .hero {
-    min-height: 196px;
+    min-height: 170px;
   }
 
   .hero-content {
-    max-width: 54%;
+    max-width: 48%;
   }
 
   .hero-title {
-    font-size: 46px;
+    font-size: 30px;
   }
 
   .featured-name {
@@ -580,7 +581,7 @@ body {
   }
 
   .section-title {
-    font-size: 36px;
+    font-size: 30px;
   }
 
   .item-row {
@@ -593,7 +594,7 @@ body {
   }
 
   .item-price {
-    font-size: 22px;
+    font-size: 20px;
   }
 }
 `
