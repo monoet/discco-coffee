@@ -1,64 +1,92 @@
 import { useState, useEffect, useCallback } from 'react'
 import { categories, featuredItem, type Category, type MenuItem } from './data/menu'
 
-// ─── Styles ─────────────────────────────────────────────────────────────────
+// ─── Design Tokens ───────────────────────────────────────────────────────────
 const css = `
-@import url('https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600&family=Space+Grotesk:wght@400;500;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=Fraunces:wght@600;700;900&display=swap');
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
-  --bg: #F5EFE4;
-  --surface: #FFFDF7;
-  --text: #171412;
-  --muted: #6F6860;
-  --border: rgba(23, 20, 18, 0.12);
-  --accent: #C8FF00;
-  --pink: #FF4FA3;
-  --shadow: 0 1px 4px rgba(23,20,18,0.06);
-  --radius: 14px;
-  --radius-sm: 10px;
-  --nav-h: 72px;
+  /* ── Palette ── */
+  --cream:      #F6F0E6;
+  --ivory:      #FBF8F2;
+  --beige:      #E8D9C8;
+  --tan:        #D6BEA4;
+  --brown:      #6D4C3D;
+  --espresso:   #2A1F1A;
+  --charcoal:   #241C18;
+  --muted:      #6E625A;
+  --border:     rgba(36, 28, 24, 0.10);
+  --border-md:  rgba(36, 28, 24, 0.16);
+
+  /* ── Accent ── */
+  --olive:      #8A9B4F;
+  --olive-dark: #6F7E3B;
+  --coral:      #D47A7A;
+
+  /* ── Surfaces ── */
+  --surface: #FFFDF9;
+  --shadow-sm: 0 1px 3px rgba(36,28,24,0.07);
+  --shadow-md: 0 3px 10px rgba(36,28,24,0.09);
+
+  /* ── Radii ── */
+  --r-sm: 8px;
+  --r-md: 12px;
+  --r-lg: 18px;
+
+  /* ── Spacing ── */
+  --sp-2: 2px;
+  --sp-4: 4px;
+  --sp-6: 6px;
+  --sp-8: 8px;
+  --sp-10: 10px;
+  --sp-12: 12px;
+  --sp-14: 14px;
+  --sp-16: 16px;
+  --sp-20: 20px;
+  --sp-24: 24px;
+  --sp-32: 32px;
 }
 
 html { scroll-behavior: smooth; }
 
 body {
-  font-family: 'Instrument Sans', system-ui, sans-serif;
-  background: #E8E2D4;
-  color: var(--text);
+  font-family: 'DM Sans', system-ui, sans-serif;
+  background: #D5CEc3;
+  color: var(--charcoal);
   min-height: 100vh;
   -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
 }
 
-::selection { background: var(--accent); color: var(--text); }
+::selection { background: var(--olive); color: var(--ivory); }
 
 ::-webkit-scrollbar { width: 0; }
 
-/* ─── Shell ─────────────────────────────────────────────── */
+/* ─── Shell ─────────────────────────────────────────────────── */
 .shell {
-  max-width: 480px;
+  max-width: 500px;
   margin: 0 auto;
-  background: var(--bg);
+  background: var(--cream);
   min-height: 100vh;
-  position: relative;
 }
 
-@media (min-width: 600px) {
-  body { background: #D9D3C5; }
+@media (min-width: 580px) {
+  body { background: #C9C3B6; }
   .shell {
-    margin: 20px auto;
-    min-height: calc(100vh - 40px);
-    border-radius: 28px;
-    box-shadow: 0 12px 48px rgba(23,20,18,0.14);
+    margin: 16px auto;
+    min-height: calc(100vh - 32px);
+    border-radius: 24px;
+    box-shadow: 0 16px 56px rgba(36,28,24,0.16);
     overflow: hidden;
   }
 }
 
-/* ─── Hero ──────────────────────────────────────────────── */
+/* ─── Hero ─────────────────────────────────────────────────── */
 .hero {
   position: relative;
-  height: 240px;
+  height: 260px;
   overflow: hidden;
 }
 
@@ -73,10 +101,10 @@ body {
   position: absolute;
   inset: 0;
   background: linear-gradient(
-    180deg,
-    rgba(23,20,18,0.05) 0%,
-    rgba(23,20,18,0.55) 60%,
-    rgba(23,20,18,0.88) 100%
+    160deg,
+    rgba(36,28,24,0.02) 0%,
+    rgba(36,28,24,0.40) 40%,
+    rgba(36,28,24,0.82) 100%
   );
 }
 
@@ -86,64 +114,83 @@ body {
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
-  padding: 20px 20px 18px;
+  padding: var(--sp-20) var(--sp-16) var(--sp-16);
 }
 
-.hero-label {
+.hero-eyebrow {
   font-size: 10px;
   font-weight: 600;
-  letter-spacing: 0.14em;
-  color: var(--accent);
+  letter-spacing: 0.18em;
   text-transform: uppercase;
-  margin-bottom: 6px;
+  color: var(--olive);
+  margin-bottom: var(--sp-6);
+  opacity: 0;
+  transform: translateY(6px);
+  animation: fadeUp 0.5s ease 0.1s forwards;
 }
 
 .hero-title {
-  font-family: 'Space Grotesk', sans-serif;
-  font-size: 26px;
-  font-weight: 700;
-  color: #fff;
-  line-height: 1.15;
+  font-family: 'Fraunces', Georgia, serif;
+  font-size: 42px;
+  font-weight: 900;
+  color: var(--ivory);
+  line-height: 1.05;
   letter-spacing: -0.02em;
-  margin-bottom: 6px;
+  margin-bottom: var(--sp-8);
+  opacity: 0;
+  transform: translateY(8px);
+  animation: fadeUp 0.55s ease 0.18s forwards;
 }
 
 .hero-sub {
-  font-size: 13px;
-  color: rgba(255,255,255,0.72);
-  line-height: 1.45;
+  font-size: 14px;
+  font-weight: 300;
+  color: rgba(251,248,242,0.68);
+  line-height: 1.55;
+  opacity: 0;
+  transform: translateY(6px);
+  animation: fadeUp 0.5s ease 0.28s forwards;
 }
 
 .hero-badge {
   position: absolute;
-  top: 16px;
-  right: 16px;
-  background: rgba(23,20,18,0.55);
-  backdrop-filter: blur(8px);
-  border: 1px solid rgba(200,255,0,0.3);
-  color: var(--accent);
+  top: var(--sp-14);
+  right: var(--sp-14);
+  background: rgba(36,28,24,0.48);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(138,155,79,0.28);
+  color: var(--olive);
   font-size: 9px;
   font-weight: 600;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
-  padding: 5px 10px;
+  padding: 4px 10px;
   border-radius: 99px;
+  opacity: 0;
+  animation: fadeIn 0.4s ease 0.4s forwards;
 }
 
-/* ─── Category Nav ──────────────────────────────────────── */
+@keyframes fadeUp {
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeIn {
+  to { opacity: 1; }
+}
+
+/* ─── Category Nav ─────────────────────────────────────────── */
 .cat-nav {
   position: sticky;
   top: 0;
   z-index: 100;
-  background: var(--bg);
+  background: var(--cream);
   border-bottom: 1px solid var(--border);
 }
 
 .cat-grid {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
-  gap: 0;
-  padding: 0 8px;
+  padding: 0 var(--sp-4);
 }
 
 .cat-btn {
@@ -151,14 +198,14 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 4px;
-  padding: 10px 4px 10px;
+  gap: var(--sp-3);
+  padding: var(--sp-12) var(--sp-2) var(--sp-10);
   background: none;
   border: none;
   cursor: pointer;
   position: relative;
   color: var(--muted);
-  transition: color 0.15s;
+  transition: color 0.2s ease;
 }
 
 .cat-btn::after {
@@ -168,100 +215,109 @@ body {
   left: 50%;
   transform: translateX(-50%);
   width: 0;
-  height: 2px;
-  background: var(--accent);
+  height: 2.5px;
+  background: var(--olive);
   border-radius: 99px;
-  transition: width 0.2s ease;
+  transition: width 0.22s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
-.cat-btn.active { color: var(--text); }
-.cat-btn.active::after { width: 24px; }
+.cat-btn.active { color: var(--charcoal); }
+.cat-btn.active::after { width: 28px; }
+
+.cat-btn:hover:not(.active) { color: var(--brown); }
 
 .cat-icon {
-  width: 28px;
-  height: 28px;
+  width: 26px;
+  height: 26px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 18px;
+  transition: transform 0.2s ease;
 }
+
+.cat-btn:hover .cat-icon { transform: translateY(-1px); }
 
 .cat-label {
   font-size: 10px;
-  font-weight: 600;
-  letter-spacing: 0.04em;
+  font-weight: 500;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
   line-height: 1;
 }
 
-/* ─── Featured Strip ────────────────────────────────────── */
+/* ─── Featured Strip ───────────────────────────────────────── */
 .featured-strip {
-  margin: 14px 14px 0;
-  background: var(--text);
-  border-radius: var(--radius);
-  padding: 14px 16px;
+  margin: var(--sp-14) var(--sp-14) 0;
+  background: var(--charcoal);
+  border-radius: var(--r-md);
+  padding: var(--sp-12) var(--sp-14);
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: var(--sp-12);
 }
 
-.featured-icon {
-  width: 44px;
-  height: 44px;
-  border-radius: var(--radius-sm);
+.featured-thumb {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--r-sm);
   overflow: hidden;
   flex-shrink: 0;
+  border: 1px solid rgba(251,248,242,0.1);
 }
 
-.featured-icon img {
+.featured-thumb img {
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
 
-.featured-info { flex: 1; min-width: 0; }
+.featured-body { flex: 1; min-width: 0; }
 
 .featured-label {
   font-size: 9px;
   font-weight: 600;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: var(--accent);
-  margin-bottom: 3px;
+  color: var(--olive);
+  margin-bottom: var(--sp-2);
 }
 
 .featured-name {
-  font-family: 'Space Grotesk', sans-serif;
+  font-family: 'Fraunces', Georgia, serif;
   font-size: 14px;
-  font-weight: 700;
-  color: #fff;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  font-weight: 600;
+  color: var(--ivory);
+  line-height: 1.3;
+}
+
+.featured-meta {
+  display: flex;
+  align-items: baseline;
+  gap: var(--sp-4);
+  margin-top: var(--sp-4);
 }
 
 .featured-price {
-  font-family: 'Space Grotesk', sans-serif;
-  font-size: 16px;
+  font-family: 'Fraunces', Georgia, serif;
+  font-size: 18px;
   font-weight: 700;
-  color: var(--accent);
-  flex-shrink: 0;
+  color: var(--olive);
 }
 
-.featured-price span {
+.featured-tagline {
   font-size: 11px;
-  font-weight: 400;
-  color: rgba(255,255,255,0.5);
-  margin-left: 2px;
+  color: rgba(251,248,242,0.42);
+  line-height: 1.4;
 }
 
-/* ─── Menu Content ───────────────────────────────────────── */
+/* ─── Menu Content ─────────────────────────────────────────── */
 .menu-content {
-  padding: 18px 14px 40px;
+  padding: var(--sp-20) var(--sp-14) var(--sp-40);
 }
 
+/* ─── Menu Section ─────────────────────────────────────────── */
 .menu-section {
-  margin-bottom: 28px;
+  margin-bottom: var(--sp-32);
 }
 
 .menu-section:last-child { margin-bottom: 0; }
@@ -269,41 +325,53 @@ body {
 .section-header {
   display: flex;
   align-items: center;
-  gap: 8px;
-  margin-bottom: 12px;
+  gap: var(--sp-10);
+  margin-bottom: var(--sp-14);
 }
 
 .section-title {
-  font-family: 'Space Grotesk', sans-serif;
-  font-size: 18px;
+  font-family: 'Fraunces', Georgia, serif;
+  font-size: 32px;
   font-weight: 700;
-  letter-spacing: -0.01em;
+  color: var(--charcoal);
+  letter-spacing: -0.02em;
+  line-height: 1;
   white-space: nowrap;
+}
+
+.section-title-accent {
+  font-size: 18px;
+  color: var(--olive);
+  margin-left: var(--sp-2);
+  font-weight: 400;
 }
 
 .section-line {
   flex: 1;
   height: 1px;
-  background: var(--border);
+  background: var(--border-md);
+  margin-top: 4px;
 }
 
-/* ─── Menu Item Row ──────────────────────────────────────── */
+/* ─── Menu Item Row ────────────────────────────────────────── */
 .item-row {
-  display: flex;
-  gap: 12px;
-  padding: 10px 0;
+  display: grid;
+  grid-template-columns: 88px minmax(0, 1fr) auto;
+  gap: var(--sp-12);
+  padding: var(--sp-12) 0;
   border-bottom: 1px solid var(--border);
+  align-items: start;
 }
 
 .item-row:last-child { border-bottom: none; }
 
 .item-thumb {
-  width: 72px;
-  height: 58px;
-  border-radius: var(--radius-sm);
+  width: 88px;
+  height: 72px;
+  border-radius: var(--r-sm);
   overflow: hidden;
+  background: var(--beige);
   flex-shrink: 0;
-  background: #E8E2D4;
 }
 
 .item-thumb img {
@@ -313,134 +381,141 @@ body {
   display: block;
 }
 
-.item-body { flex: 1; min-width: 0; }
+.item-body { min-width: 0; }
 
 .item-top {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  gap: 8px;
-  margin-bottom: 3px;
+  gap: var(--sp-6);
+  margin-bottom: var(--sp-4);
 }
 
 .item-name {
+  font-size: 16px;
   font-weight: 600;
-  font-size: 14px;
+  color: var(--charcoal);
   line-height: 1.3;
+  letter-spacing: -0.01em;
 }
 
 .item-badge {
   flex-shrink: 0;
-  font-size: 8px;
+  font-size: 8.5px;
   font-weight: 700;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
-  padding: 3px 7px;
+  padding: 3px 8px;
   border-radius: 99px;
-  background: var(--accent);
-  color: var(--text);
+  background: var(--olive);
+  color: var(--ivory);
   white-space: nowrap;
+  margin-top: 1px;
 }
 
-.item-badge.pink { background: var(--pink); color: #fff; }
+.item-badge.coral { background: var(--coral); color: var(--ivory); }
 
 .item-desc {
-  font-size: 11.5px;
+  font-size: 13px;
   color: var(--muted);
-  line-height: 1.45;
-  margin-bottom: 5px;
+  line-height: 1.55;
+  font-weight: 300;
+}
+
+.item-price-col {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: flex-start;
+  gap: var(--sp-4);
+  padding-top: 2px;
 }
 
 .item-price {
-  font-family: 'Space Grotesk', sans-serif;
-  font-size: 15px;
+  font-family: 'Fraunces', Georgia, serif;
+  font-size: 18px;
   font-weight: 700;
+  color: var(--charcoal);
+  letter-spacing: -0.02em;
+  white-space: nowrap;
 }
 
-/* ─── Footer ────────────────────────────────────────────── */
+.item-price-sub {
+  font-size: 10px;
+  color: var(--muted);
+  font-weight: 400;
+  letter-spacing: 0.04em;
+}
+
+/* ─── Footer ───────────────────────────────────────────────── */
 .footer {
   text-align: center;
-  padding: 24px 14px 36px;
+  padding: var(--sp-24) var(--sp-16) var(--sp-36);
   border-top: 1px solid var(--border);
 }
 
 .footer-logo {
-  font-family: 'Space Grotesk', sans-serif;
-  font-size: 16px;
+  font-family: 'Fraunces', Georgia, serif;
+  font-size: 17px;
   font-weight: 700;
   letter-spacing: -0.02em;
-  margin-bottom: 4px;
+  color: var(--charcoal);
+  margin-bottom: var(--sp-4);
 }
 
-.footer-logo span { color: var(--accent); }
+.footer-logo span { color: var(--olive); }
+
+.footer-divider {
+  width: 32px;
+  height: 2px;
+  background: var(--olive);
+  margin: var(--sp-10) auto var(--sp-10);
+  border-radius: 99px;
+  opacity: 0.7;
+}
 
 .footer-sub {
   font-size: 11px;
   color: var(--muted);
-  margin-bottom: 10px;
-}
-
-.footer-divider {
-  width: 28px;
-  height: 2px;
-  background: var(--accent);
-  margin: 0 auto 10px;
-  border-radius: 99px;
+  line-height: 1.6;
+  letter-spacing: 0.02em;
 }
 `
 
-// ─── SVG Icons (inline, no extra deps) ───────────────────────────────────────
-function Icon({ name }: { name: string }) {
+// ─── SVG Icons ────────────────────────────────────────────────────────────────
+function Icon({ name, size = 18 }: { name: string; size?: number }) {
+  const s = size
   const icons: Record<string, JSX.Element> = {
     coffee: (
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M17 8h1a4 4 0 1 1 0 8h-1"/>
-        <path d="M3 8h14v9a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4Z"/>
-        <line x1="6" y1="2" x2="6" y2="4"/>
-        <line x1="10" y1="2" x2="10" y2="4"/>
-        <line x1="14" y1="2" x2="14" y2="4"/>
+      <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M17 8h1a4 4 0 1 1 0 8h-1"/><path d="M3 8h14v9a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4Z"/><line x1="6" y1="2" x2="6" y2="4"/><line x1="10" y1="2" x2="10" y2="4"/><line x1="14" y1="2" x2="14" y2="4"/>
       </svg>
     ),
     sun: (
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <circle cx="12" cy="12" r="4"/>
-        <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/>
+      <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+        <circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/>
       </svg>
     ),
     utensils: (
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"/>
-        <path d="M7 2v20"/>
-        <path d="M21 15V2v0a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7"/>
+      <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"/><path d="M7 2v20"/><path d="M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7"/>
       </svg>
     ),
     cake: (
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M20 21v-8a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8"/>
-        <path d="M4 16s.5-1 2-1 2.5 2 4 2 2.5-2 4-2 2.5 2 4 2 2-1 2-1"/>
-        <path d="M2 21h20"/>
-        <path d="M7 8v3"/>
-        <path d="M12 8v3"/>
-        <path d="M17 8v3"/>
-        <path d="M7 4h.01"/>
-        <path d="M12 4h.01"/>
-        <path d="M17 4h.01"/>
+      <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M20 21v-8a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8"/><path d="M4 16s.5-1 2-1 2.5 2 4 2 2.5-2 4-2 2.5 2 4 2 2-1 2-1"/><path d="M2 21h20"/><path d="M7 8v2M12 8v2M17 8v2M7 4h.01M12 4h.01M17 4h.01"/>
       </svg>
     ),
-    cup: (
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M17 8h1a4 4 0 1 1 0 8h-1"/>
-        <path d="M3 8h14v9a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4Z"/>
-        <line x1="6" y1="2" x2="6" y2="4"/>
-        <line x1="10" y1="2" x2="10" y2="4"/>
-        <line x1="14" y1="2" x2="14" y2="4"/>
+    beverage: (
+      <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M8 2h8l-1 9H9L8 2Z"/><path d="M12 11v11"/><path d="M5 2c0 1.7 1.4 3 3 3s3-1.3 3-3"/><path d="M19 2c0 1.7-1.4 3-3 3s-3-1.3-3-3"/>
       </svg>
     ),
   }
-  return icons[name] ?? <span style={{ fontSize: 18 }}>○</span>
+  return icons[name] ?? <span style={{ fontSize: s }}>○</span>
 }
 
-// ─── Hero ───────────────────────────────────────────────────────────────────
+// ─── Hero ─────────────────────────────────────────────────────────────────────
 function HeroSection() {
   return (
     <header className="hero">
@@ -451,7 +526,7 @@ function HeroSection() {
       />
       <div className="hero-overlay" />
       <div className="hero-content">
-        <p className="hero-label">Bienvenido</p>
+        <p className="hero-eyebrow">Bienvenido</p>
         <h1 className="hero-title">Buen café,<br />buen sonido</h1>
         <p className="hero-sub">Café, desayunos y algo para escuchar.</p>
       </div>
@@ -460,7 +535,7 @@ function HeroSection() {
   )
 }
 
-// ─── Category Grid ───────────────────────────────────────────────────────────
+// ─── Category Nav ─────────────────────────────────────────────────────────────
 function CategoryNav({
   categories,
   activeId,
@@ -471,7 +546,7 @@ function CategoryNav({
   onSelect: (id: string) => void
 }) {
   return (
-    <nav className="cat-nav" aria-label="Categorías">
+    <nav className="cat-nav" aria-label="Categorías del menú">
       <div className="cat-grid">
         {categories.map((cat) => (
           <button
@@ -481,7 +556,7 @@ function CategoryNav({
             aria-current={activeId === cat.id ? 'page' : undefined}
           >
             <span className="cat-icon">
-              <Icon name={cat.icon} />
+              <Icon name={cat.icon} size={18} />
             </span>
             <span className="cat-label">{cat.label}</span>
           </button>
@@ -491,31 +566,31 @@ function CategoryNav({
   )
 }
 
-// ─── Featured Strip ──────────────────────────────────────────────────────────
+// ─── Featured Strip ────────────────────────────────────────────────────────────
 function FeaturedStrip() {
   return (
     <div className="featured-strip">
-      <div className="featured-icon">
+      <div className="featured-thumb">
         <img
           src="https://images.unsplash.com/photo-1759754147072-aff1923ba10f?auto=format&fit=crop&w=120&q=80"
-          alt="Cold Brew"
+          alt={featuredItem.name}
         />
       </div>
-      <div className="featured-info">
+      <div className="featured-body">
         <div className="featured-label">★ Especial de la casa</div>
         <div className="featured-name">{featuredItem.name}</div>
-      </div>
-      <div className="featured-price">
-        ${featuredItem.price}
-        <span>MXN</span>
+        <div className="featured-meta">
+          <span className="featured-price">${featuredItem.price}</span>
+          <span className="featured-tagline">El almuerzo perfecto</span>
+        </div>
       </div>
     </div>
   )
 }
 
-// ─── Menu Item Row ───────────────────────────────────────────────────────────
+// ─── Menu Item Row ─────────────────────────────────────────────────────────────
 function MenuItemRow({ item }: { item: MenuItem }) {
-  const isPink = item.badge === 'Especial'
+  const isCoral = item.badge === 'Especial'
   return (
     <article className="item-row">
       <div className="item-thumb">
@@ -525,22 +600,31 @@ function MenuItemRow({ item }: { item: MenuItem }) {
         <div className="item-top">
           <h3 className="item-name">{item.name}</h3>
           {item.badge && (
-            <span className={`item-badge${isPink ? ' pink' : ''}`}>{item.badge}</span>
+            <span className={`item-badge${isCoral ? ' coral' : ''}`}>{item.badge}</span>
           )}
         </div>
         <p className="item-desc">{item.description}</p>
-        <div className="item-price">${item.price}</div>
+      </div>
+      <div className="item-price-col">
+        <span className="item-price">${item.price}</span>
+        <span className="item-price-sub">MXN</span>
       </div>
     </article>
   )
 }
 
-// ─── Menu Section ────────────────────────────────────────────────────────────
+// ─── Menu Section ─────────────────────────────────────────────────────────────
 function MenuSection({ category }: { category: Category }) {
   return (
-    <section id={`cat-${category.id}`} className="menu-section" aria-labelledby={`title-${category.id}`}>
+    <section
+      id={`cat-${category.id}`}
+      className="menu-section"
+      aria-labelledby={`title-${category.id}`}
+    >
       <div className="section-header">
-        <h2 className="section-title" id={`title-${category.id}`}>{category.label}</h2>
+        <h2 className="section-title" id={`title-${category.id}`}>
+          {category.label}
+        </h2>
         <div className="section-line" />
       </div>
       {category.items.map((item) => (
@@ -550,19 +634,19 @@ function MenuSection({ category }: { category: Category }) {
   )
 }
 
-// ─── Footer ──────────────────────────────────────────────────────────────────
+// ─── Footer ────────────────────────────────────────────────────────────────────
 function Footer() {
   return (
     <footer className="footer">
       <div className="footer-logo">Discco <span>Coffee</span></div>
-      <div className="footer-sub">Demo de menú digital</div>
-      <div className="footer-divider" />
-      <div className="footer-sub">Para acompañar una buena sesión.</div>
+      <div className="footer-divider" aria-hidden="true" />
+      <p className="footer-sub">Demo de menú digital</p>
+      <p className="footer-sub">Para acompañar una buena sesión.</p>
     </footer>
   )
 }
 
-// ─── App ─────────────────────────────────────────────────────────────────────
+// ─── App ──────────────────────────────────────────────────────────────────────
 export default function App() {
   const [activeCategory, setActiveCategory] = useState(categories[0].id)
 
@@ -574,25 +658,21 @@ export default function App() {
     }
   }, [])
 
-  // Track active category via IntersectionObserver
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
-            const id = entry.target.id.replace('cat-', '')
-            setActiveCategory(id)
+            setActiveCategory(entry.target.id.replace('cat-', ''))
           }
         })
       },
-      { rootMargin: '-35% 0px -60% 0px', threshold: 0 }
+      { rootMargin: '-30% 0px -65% 0px', threshold: 0 }
     )
-
     categories.forEach((cat) => {
       const el = document.getElementById(`cat-${cat.id}`)
       if (el) observer.observe(el)
     })
-
     return () => observer.disconnect()
   }, [])
 

@@ -76,7 +76,7 @@ export const categories: Category[] = [
   {
     id: 'bebidas',
     label: 'Bebidas',
-    icon: 'cup',
+    icon: 'beverage',
     items: [
       { id: 'b1', name: 'Limonada Natural', description: 'Limón real, menta fresca y hielo.', price: 42, image: IMAGES.lemonade },
       { id: 'b2', name: 'Matcha Latte', description: 'Suave, herbal y ligeramente dulce.', price: 62, image: IMAGES.lemonadeClose },
