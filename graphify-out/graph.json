@@ -1,0 +1,151 @@
+{
+  "directed": false,
+  "multigraph": false,
+  "graph": {},
+  "nodes": [
+    {
+      "label": "vite.config.ts",
+      "file_type": "code",
+      "source_file": "vite.config.ts",
+      "source_location": "L1",
+      "id": "vite_config_ts",
+      "community": 1,
+      "norm_label": "vite.config.ts"
+    },
+    {
+      "label": "App.tsx",
+      "file_type": "code",
+      "source_file": "src/App.tsx",
+      "source_location": "L1",
+      "id": "src_app_tsx",
+      "community": 0,
+      "norm_label": "app.tsx"
+    },
+    {
+      "label": "Icon()",
+      "file_type": "code",
+      "source_file": "src/App.tsx",
+      "source_location": "L602",
+      "id": "app_icon",
+      "community": 0,
+      "norm_label": "icon()"
+    },
+    {
+      "label": "HeroSection()",
+      "file_type": "code",
+      "source_file": "src/App.tsx",
+      "source_location": "L652",
+      "id": "app_herosection",
+      "community": 0,
+      "norm_label": "herosection()"
+    },
+    {
+      "label": "CategoryNav()",
+      "file_type": "code",
+      "source_file": "src/App.tsx",
+      "source_location": "L671",
+      "id": "app_categorynav",
+      "community": 0,
+      "norm_label": "categorynav()"
+    },
+    {
+      "label": "FeaturedStrip()",
+      "file_type": "code",
+      "source_file": "src/App.tsx",
+      "source_location": "L702",
+      "id": "app_featuredstrip",
+      "community": 0,
+      "norm_label": "featuredstrip()"
+    },
+    {
+      "label": "PopularHighlights()",
+      "file_type": "code",
+      "source_file": "src/App.tsx",
+      "source_location": "L724",
+      "id": "app_popularhighlights",
+      "community": 0,
+      "norm_label": "popularhighlights()"
+    },
+    {
+      "label": "main.tsx",
+      "file_type": "code",
+      "source_file": "src/main.tsx",
+      "source_location": "L1",
+      "id": "src_main_tsx",
+      "community": 2,
+      "norm_label": "main.tsx"
+    },
+    {
+      "label": "menu.ts",
+      "file_type": "code",
+      "source_file": "src/data/menu.ts",
+      "source_location": "L1",
+      "id": "src_data_menu_ts",
+      "community": 3,
+      "norm_label": "menu.ts"
+    }
+  ],
+  "links": [
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/App.tsx",
+      "source_location": "L602",
+      "weight": 1.0,
+      "_src": "src_app_tsx",
+      "_tgt": "app_icon",
+      "source": "src_app_tsx",
+      "target": "app_icon",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/App.tsx",
+      "source_location": "L652",
+      "weight": 1.0,
+      "_src": "src_app_tsx",
+      "_tgt": "app_herosection",
+      "source": "src_app_tsx",
+      "target": "app_herosection",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/App.tsx",
+      "source_location": "L671",
+      "weight": 1.0,
+      "_src": "src_app_tsx",
+      "_tgt": "app_categorynav",
+      "source": "src_app_tsx",
+      "target": "app_categorynav",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/App.tsx",
+      "source_location": "L702",
+      "weight": 1.0,
+      "_src": "src_app_tsx",
+      "_tgt": "app_featuredstrip",
+      "source": "src_app_tsx",
+      "target": "app_featuredstrip",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/App.tsx",
+      "source_location": "L724",
+      "weight": 1.0,
+      "_src": "src_app_tsx",
+      "_tgt": "app_popularhighlights",
+      "source": "src_app_tsx",
+      "target": "app_popularhighlights",
+      "confidence_score": 1.0
+    }
+  ],
+  "hyperedges": []
+}

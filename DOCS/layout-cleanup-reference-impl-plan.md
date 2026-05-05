@@ -1,16 +1,16 @@
 # Layout Cleanup Reference Impl Plan
 
 - [x] **Stage 0 — Reference Intake**
-- [ ] **Stage 1 — Layout Token Alignment**
-- [ ] **Stage 2 — Hero + Category Rail Cleanup**
-- [ ] **Stage 3 — Menu List Rhythm Cleanup**
-- [ ] **Stage 4 — CTA Bar + Final Visual Polish**
+- [x] **Stage 1 — Layout Token Alignment**
+- [x] **Stage 2 — Hero + Category Rail Cleanup**
+- [x] **Stage 3 — Menu List Rhythm Cleanup**
+- [x] **Stage 4 — CTA Bar + Final Visual Polish**
 - [ ] **Stage 5 — Mobile Validation Against Reference**
 
 **Project:** `discco-coffee`
 **Focus:** Layout cleanup and visual rhythm alignment
 **Reference type:** mobile menu screen
-**Status:** goal and reference documentation only
+**Status:** implementation pass applied; mobile visual validation still pending
 
 ---
 
@@ -395,3 +395,23 @@ This goal section is satisfied when:
 
 All numeric values above should be interpreted as **optical targets**.
 During implementation we can tune exact CSS values, but the visual hierarchy and spacing relationships should remain stable.
+
+---
+
+## Implementation Progress — 2026-05-05
+
+Applied a second layout pass after visual review:
+
+- Reduced hero from tall poster treatment to a compact `2 / 1` editorial crop.
+- Softened accent green from neon yellow-green to a more organic cafe tone.
+- Increased vertical breathing room in the category rail without widening the horizontal layout.
+- Reworked the featured strip with calmer color, tighter radius, and more balanced internal padding.
+- Added a `Populares` highlight row with 5 items below the featured strip and before `Café`.
+- Kept `Populares` out of category navigation to preserve the 5-button rail.
+- Reduced menu row image, text, and price scale to prevent the list from feeling oversized.
+- Removed the floating hero demo badge to reduce clutter.
+
+Validation:
+
+- `npm run build` passed.
+- `graphify` code graph was rebuilt after code changes.

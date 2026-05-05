@@ -19,9 +19,9 @@ const css = `
   --thumb-bg:     #E8E1D4;
 
   /* ── Accent ── */
-  --green:        #D0EA00;
-  --green-dark:   #97A600;
-  --green-light:  #DDF260;
+  --green:        #9EAD3D;
+  --green-dark:   #6F7B2D;
+  --green-light:  #C3CC6C;
   --coral:        #F25487;
   --gold:         #C8B059;
 
@@ -41,8 +41,11 @@ const css = `
   --sp-4:  4px;
   --sp-6:  6px;
   --sp-8:  8px;
+  --sp-10: 10px;
   --sp-12: 12px;
+  --sp-14: 14px;
   --sp-16: 16px;
+  --sp-18: 18px;
   --sp-20: 20px;
   --sp-24: 24px;
   --sp-28: 28px;
@@ -93,7 +96,9 @@ body {
 /* ─── Hero ─────────────────────────────────────────────────────── */
 .hero {
   position: relative;
-  height: 292px;
+  aspect-ratio: 2 / 1;
+  min-height: 210px;
+  max-height: 248px;
   overflow: hidden;
 }
 
@@ -116,15 +121,15 @@ body {
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
-  padding: var(--sp-24) var(--sp-20) var(--sp-24);
-  max-width: 56%;
+  padding: var(--sp-20);
+  max-width: 48%;
 }
 
 .hero-eyebrow {
   font-family: 'DM Sans', sans-serif;
   font-size: 12px;
   font-weight: 700;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--green);
   margin-bottom: var(--sp-8);
@@ -132,38 +137,21 @@ body {
 
 .hero-title {
   font-family: 'Bebas Neue', 'Oswald', sans-serif;
-  font-size: 70px;
+  font-size: 52px;
   font-weight: 400;
   color: #fff;
-  line-height: 0.88;
-  letter-spacing: 0.015em;
-  margin-bottom: var(--sp-12);
+  line-height: 0.92;
+  letter-spacing: 0;
+  margin-bottom: var(--sp-10);
   text-wrap: balance;
 }
 
 .hero-sub {
   font-family: 'DM Sans', sans-serif;
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 400;
   color: rgba(255,255,255,0.76);
   line-height: 1.42;
-}
-
-.hero-badge {
-  position: absolute;
-  top: var(--sp-14);
-  right: var(--sp-14);
-  font-family: 'DM Sans', sans-serif;
-  font-size: 9px;
-  font-weight: 600;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--green);
-  background: rgba(12,10,8,0.58);
-  backdrop-filter: blur(8px);
-  border: 1px solid rgba(208,234,0,0.24);
-  padding: 4px 10px;
-  border-radius: 99px;
 }
 
 /* ─── Category Nav ─────────────────────────────────────────────── */
@@ -179,7 +167,7 @@ body {
 .cat-grid {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
-  padding: var(--sp-4) var(--sp-10) 0;
+  padding: var(--sp-8) var(--sp-10) 0;
 }
 
 .cat-btn {
@@ -187,8 +175,9 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: var(--sp-6);
-  padding: var(--sp-12) var(--sp-2) var(--sp-14);
+  gap: var(--sp-8);
+  min-height: 78px;
+  padding: var(--sp-8) var(--sp-2) var(--sp-18);
   background: none;
   border: none;
   cursor: pointer;
@@ -200,23 +189,23 @@ body {
 .cat-btn::after {
   content: '';
   position: absolute;
-  bottom: 0;
+  bottom: 6px;
   left: 50%;
   transform: translateX(-50%);
   width: 0;
-  height: 6px;
+  height: 4px;
   background: var(--green);
   border-radius: 99px;
   transition: width 0.22s cubic-bezier(0.34, 1.2, 0.64, 1);
 }
 
 .cat-btn.active { color: var(--text); }
-.cat-btn.active::after { width: 64px; }
+.cat-btn.active::after { width: 58px; }
 .cat-btn:hover:not(.active) { color: var(--text); }
 
 .cat-icon {
-  width: 24px;
-  height: 24px;
+  width: 22px;
+  height: 22px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -224,29 +213,29 @@ body {
 
 .cat-label {
   font-family: 'DM Sans', sans-serif;
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 700;
-  letter-spacing: 0.09em;
+  letter-spacing: 0.04em;
   text-transform: uppercase;
   line-height: 1;
 }
 
 /* ─── Featured Strip ────────────────────────────────────────────── */
 .featured-strip {
-  margin: var(--sp-24) var(--sp-20) 0;
-  background: var(--text);
-  border-radius: 18px;
-  padding: var(--sp-14) var(--sp-16);
+  margin: var(--sp-20) var(--sp-20) 0;
+  background: #201C17;
+  border-radius: 16px;
+  padding: var(--sp-12);
   display: flex;
   align-items: center;
-  gap: var(--sp-12);
-  box-shadow: var(--shadow-md);
+  gap: var(--sp-14);
+  box-shadow: 0 10px 24px rgba(24, 20, 16, 0.12);
 }
 
 .featured-thumb {
-  width: 56px;
-  height: 56px;
-  border-radius: 14px;
+  width: 62px;
+  height: 62px;
+  border-radius: 13px;
   overflow: hidden;
   flex-shrink: 0;
 }
@@ -264,7 +253,7 @@ body {
   font-family: 'DM Sans', sans-serif;
   font-size: 10px;
   font-weight: 700;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--green);
   margin-bottom: var(--sp-4);
@@ -272,10 +261,10 @@ body {
 
 .featured-name {
   font-family: 'Bebas Neue', 'Oswald', sans-serif;
-  font-size: 22px;
+  font-size: 20px;
   font-weight: 400;
   color: var(--surface);
-  letter-spacing: 0.02em;
+  letter-spacing: 0;
   line-height: 1.02;
 }
 
@@ -300,6 +289,66 @@ body {
   line-height: 1.4;
 }
 
+/* ─── Popular Highlights ───────────────────────────────────────── */
+.popular-section {
+  margin: var(--sp-28) 0 var(--sp-28);
+}
+
+.popular-title {
+  font-family: 'Bebas Neue', 'Oswald', sans-serif;
+  font-size: 34px;
+  font-weight: 400;
+  line-height: 0.95;
+  letter-spacing: 0;
+  color: var(--text);
+  margin-bottom: var(--sp-14);
+}
+
+.popular-row {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 132px;
+  gap: var(--sp-12);
+  overflow-x: auto;
+  margin: 0 calc(var(--sp-20) * -1);
+  padding: 0 var(--sp-20) var(--sp-4);
+  scroll-snap-type: x proximity;
+}
+
+.popular-card {
+  scroll-snap-align: start;
+}
+
+.popular-img {
+  width: 132px;
+  height: 84px;
+  border-radius: 14px;
+  overflow: hidden;
+  background: var(--thumb-bg);
+  margin-bottom: var(--sp-8);
+}
+
+.popular-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.popular-name {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1.12;
+  margin-bottom: var(--sp-4);
+}
+
+.popular-price {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--green-dark);
+}
+
 /* ─── Menu Content ─────────────────────────────────────────────── */
 .menu-content {
   padding: var(--sp-16) var(--sp-20) calc(116px + env(safe-area-inset-bottom));
@@ -310,7 +359,7 @@ body {
   margin-bottom: var(--sp-32);
   scroll-margin-top: 86px;
 }
-.menu-section:first-of-type { margin-top: var(--sp-28); }
+.menu-section:first-of-type { margin-top: var(--sp-4); }
 .menu-section:last-child { margin-bottom: 0; }
 
 .section-header {
@@ -322,10 +371,10 @@ body {
 
 .section-title {
   font-family: 'Bebas Neue', 'Oswald', sans-serif;
-  font-size: 40px;
+  font-size: 34px;
   font-weight: 400;
   color: var(--text);
-  letter-spacing: 0.02em;
+  letter-spacing: 0;
   line-height: 0.94;
   white-space: nowrap;
 }
@@ -340,9 +389,9 @@ body {
 /* ─── Menu Item Row ────────────────────────────────────────────── */
 .item-row {
   display: grid;
-  grid-template-columns: 104px minmax(0, 1fr) auto;
-  gap: 18px;
-  padding: var(--sp-16) 0 var(--sp-20);
+  grid-template-columns: 96px minmax(0, 1fr) auto;
+  gap: var(--sp-16);
+  padding: var(--sp-14) 0 var(--sp-18);
   border-bottom: 1px solid var(--divider);
   align-items: start;
 }
@@ -350,9 +399,9 @@ body {
 .item-row:last-child { border-bottom: none; }
 
 .item-thumb {
-  width: 104px;
-  height: 78px;
-  border-radius: 16px;
+  width: 96px;
+  height: 72px;
+  border-radius: 14px;
   overflow: hidden;
   background: var(--thumb-bg);
   flex-shrink: 0;
@@ -369,17 +418,17 @@ body {
 
 .item-name {
   font-family: 'DM Sans', sans-serif;
-  font-size: 19px;
+  font-size: 17px;
   font-weight: 700;
   color: var(--text);
   line-height: 1.08;
-  letter-spacing: -0.02em;
+  letter-spacing: 0;
   margin-bottom: var(--sp-6);
 }
 
 .item-desc {
   font-family: 'DM Sans', sans-serif;
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 400;
   color: var(--text-2);
   line-height: 1.38;
@@ -393,15 +442,15 @@ body {
   justify-content: flex-start;
   gap: var(--sp-4);
   padding-top: 2px;
-  min-width: 78px;
+  min-width: 66px;
 }
 
 .item-price {
   font-family: 'DM Sans', sans-serif;
-  font-size: 24px;
+  font-size: 21px;
   font-weight: 700;
   color: var(--text);
-  letter-spacing: -0.02em;
+  letter-spacing: 0;
   white-space: nowrap;
   line-height: 1;
 }
@@ -411,7 +460,7 @@ body {
   font-size: 10px;
   font-weight: 400;
   color: var(--text-3);
-  letter-spacing: 0.08em;
+  letter-spacing: 0;
   text-transform: uppercase;
 }
 
@@ -422,7 +471,7 @@ body {
   font-family: 'DM Sans', sans-serif;
   font-size: 11px;
   font-weight: 700;
-  letter-spacing: 0.04em;
+  letter-spacing: 0;
   text-transform: uppercase;
   white-space: nowrap;
 }
@@ -515,15 +564,15 @@ body {
 
 @media (max-width: 399px) {
   .hero {
-    height: 272px;
+    min-height: 196px;
   }
 
   .hero-content {
-    max-width: 62%;
+    max-width: 54%;
   }
 
   .hero-title {
-    font-size: 62px;
+    font-size: 46px;
   }
 
   .featured-name {
@@ -535,12 +584,12 @@ body {
   }
 
   .item-row {
-    grid-template-columns: 96px minmax(0, 1fr) auto;
+    grid-template-columns: 88px minmax(0, 1fr) auto;
   }
 
   .item-thumb {
-    width: 96px;
-    height: 74px;
+    width: 88px;
+    height: 68px;
   }
 
   .item-price {
@@ -591,6 +640,14 @@ function Icon({ name, size = 16 }: { name: string; size?: number }) {
   return icons[name] ?? <span style={{ fontSize: s }}>○</span>
 }
 
+const popularItems = [
+  categories.find((cat) => cat.id === 'cafe')?.items[0],
+  categories.find((cat) => cat.id === 'cafe')?.items[1],
+  categories.find((cat) => cat.id === 'desayunos')?.items[0],
+  categories.find((cat) => cat.id === 'platos')?.items[0],
+  categories.find((cat) => cat.id === 'bebidas')?.items[0],
+].filter((item): item is MenuItem => Boolean(item))
+
 // ─── Hero ──────────────────────────────────────────────────────────────────
 function HeroSection() {
   return (
@@ -606,7 +663,6 @@ function HeroSection() {
         <h1 className="hero-title">Buen café,<br />buen sonido</h1>
         <p className="hero-sub">Café, desayunos y algo para escuchar.</p>
       </div>
-      <div className="hero-badge">Menú demo</div>
     </header>
   )
 }
@@ -661,6 +717,26 @@ function FeaturedStrip() {
         </div>
       </div>
     </div>
+  )
+}
+
+// ─── Popular Highlights ────────────────────────────────────────────────────
+function PopularHighlights() {
+  return (
+    <section className="popular-section" aria-labelledby="popular-title">
+      <h2 className="popular-title" id="popular-title">Populares</h2>
+      <div className="popular-row" aria-label="Productos populares">
+        {popularItems.map((item) => (
+          <article className="popular-card" key={`popular-${item.id}`}>
+            <div className="popular-img">
+              <img src={item.image} alt={item.name} loading="lazy" />
+            </div>
+            <h3 className="popular-name">{item.name}</h3>
+            <p className="popular-price">${item.price} MXN</p>
+          </article>
+        ))}
+      </div>
+    </section>
   )
 }
 
@@ -787,6 +863,7 @@ export default function App() {
         />
         <main className="menu-content">
           <FeaturedStrip />
+          <PopularHighlights />
           {categories.map((cat) => (
             <MenuSection key={cat.id} category={cat} />
           ))}
