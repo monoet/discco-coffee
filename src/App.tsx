@@ -294,10 +294,8 @@ body {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: center center;
+  object-position: center;
   display: block;
-  transform: scale(1.16);
-  transform-origin: 54% 42%;
 }
 
 .hero-overlay {
