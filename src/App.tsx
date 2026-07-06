@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react'
-import { categories, featuredItem, type Category, type MenuItem } from './data/menu'
+import { IMAGES, categories, featuredItem, type Category, type MenuItem } from './data/menu'
 
 // ─── Design Tokens ─────────────────────────────────────────────────────────────
 const css = `
@@ -285,13 +285,19 @@ body {
   min-height: 178px;
   max-height: 211px;
   overflow: hidden;
+  background: #201C17;
 }
 
 .hero-img {
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
+  object-position: center center;
   display: block;
+  transform: scale(1.16);
+  transform-origin: 54% 42%;
 }
 
 .hero-overlay {
@@ -672,7 +678,7 @@ body {
 /* ─── Footer ──────────────────────────────────────────────────── */
 .footer {
   text-align: center;
-  padding: 0 var(--sp-20) calc(var(--sp-40) + 112px);
+  padding: 0 var(--sp-20) calc(var(--sp-40) + env(safe-area-inset-bottom));
   border-top: 1px solid var(--divider);
   opacity: 0.68;
 }
@@ -840,8 +846,10 @@ function HeroSection() {
     <header className="hero">
       <img
         className="hero-img"
-        src="https://images.unsplash.com/photo-1760163630058-aa71c91783bf?auto=format&fit=crop&w=1400&q=80"
+        src={IMAGES.hero}
         alt="discco café — buen café, buen sonido"
+        loading="eager"
+        decoding="async"
       />
       <div className="hero-overlay" />
       <div className="hero-content">

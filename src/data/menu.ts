@@ -1,6 +1,6 @@
 // ─── Image URLs (remote only — not committed to repo) ───────────────────────
 export const IMAGES = {
-  hero: 'https://images.unsplash.com/photo-1760163630058-aa71c91783bf?auto=format&fit=crop&w=1400&q=80',
+  hero: 'https://images.unsplash.com/photo-1760163630058-aa71c91783bf?auto=format&fit=crop&w=1600&h=800&crop=entropy&q=82',
   latte: 'https://images.unsplash.com/photo-1760163630058-aa71c91783bf?auto=format&fit=crop&w=600&q=80',
   coldBrew: 'https://images.unsplash.com/photo-1759754147072-aff1923ba10f?auto=format&fit=crop&w=600&q=80',
   twoCoffees: 'https://images.unsplash.com/photo-1680882124594-0be7eb308822?auto=format&fit=crop&w=600&q=80',
