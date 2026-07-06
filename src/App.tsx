@@ -281,9 +281,8 @@ body {
 /* ─── Hero ─────────────────────────────────────────────────────── */
 .hero {
   position: relative;
-  aspect-ratio: 2 / 1;
-  min-height: 178px;
-  max-height: 211px;
+  width: 100%;
+  height: clamp(178px, 44vw, 211px);
   overflow: hidden;
   background: #201C17;
 }
@@ -754,7 +753,7 @@ body {
 
 @media (max-width: 399px) {
   .hero {
-    min-height: 170px;
+    height: 170px;
   }
 
   .hero-content {
